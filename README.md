@@ -80,3 +80,5 @@ systemctl start postgresql-11
 su - postgres
 psql
 ```
+
+[psql istemci komutları ve dizin yapısı](bolum_2.md)
