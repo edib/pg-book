@@ -7,7 +7,7 @@
 
 Vagrant kullanımı
 Vagrant masaüstü ortamları için kod ile otomatik sanal makine oluşturma uygulamasıdır. Varsayılan olarak virtualbox kullanır. Windows ve linux hostlar üzerinde çalışır.
-# centos7 imajını eğer makinede yoksa vagrant reposundan indirir varsa imajı alıp yeni maline oluşturur.  
+* centos7 imajını eğer makinede yoksa vagrant reposundan indirir varsa imajı alıp yeni maline oluşturur.  
 ```
 vagrant init centos/7
 ```
