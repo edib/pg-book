@@ -31,3 +31,13 @@ Varsayılan kurulumda:
 \du
 -- vb.
 ```
+** psql ile dbnin yolu
+```
+-- veritabanların dizinleri
+select oid, datname from pg_database ;
+
+-- tabloların gerçek dizinleri
+select pg_relation_filepath('<tablo_adi');
+-[ RECORD 1 ]--------+-----------------
+pg_relation_filepath | base/13025/16384
+```
