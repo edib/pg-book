@@ -36,12 +36,6 @@ Vagrant varsayılan olarak hostla sadedece "vagrant ssh" ile etkileşime geçen 
 config.vm.network "private_network", type: "dhcp"
 ```
 
-Eğer makine üzerinde başka bir ağ varsa adaptörü oraya yönlendirebiliyoruz.
-
-```
-config.vm.network "public_network",bridge: "vmnet2", type: "dhcp"
-```
-
 Ayrıca hostonly ağ tanımlamışssak ve o ağa ssh ile doğrudan erişmek istersek, vagrantın varsayılan "parola ile login olunmaz ayarını da değiştirmek gerekmektedir.
 
 ```
