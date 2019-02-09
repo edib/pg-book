@@ -31,4 +31,3 @@ Varsayılan kurulumda:
 \du
 -- vb.
 ```
-lani 
