@@ -7,7 +7,7 @@
 
 Vagrant kullanımı
 Vagrant masaüstü ortamları için kod ile otomatik sanal makine oluşturma uygulamasıdır. Varsayılan olarak virtualbox kullanır. Windows ve linux hostlar üzerinde çalışır.
-# centos7 imajını eğer makinede yoksa vagrant reposundan indirir varsa imajı alıp yeni maline oluşturur.  
+* centos7 imajını eğer makinede yoksa vagrant reposundan indirir varsa imajı alıp yeni maline oluşturur.  
 ```
 vagrant init centos/7
 ```
@@ -34,12 +34,6 @@ Vagrant varsayılan olarak hostla sadedece "vagrant ssh" ile etkileşime geçen 
 
 ```
 config.vm.network "private_network", type: "dhcp"
-```
-
-Eğer makine üzerinde başka bir ağ varsa adaptörü oraya yönlendirebiliyoruz.
-
-```
-config.vm.network "public_network",bridge: "vmnet2", type: "dhcp"
 ```
 
 Ayrıca hostonly ağ tanımlamışssak ve o ağa ssh ile doğrudan erişmek istersek, vagrantın varsayılan "parola ile login olunmaz ayarını da değiştirmek gerekmektedir.
@@ -86,3 +80,5 @@ systemctl start postgresql-11
 su - postgres
 psql
 ```
+
+[psql istemci komutları ve dizin yapısı](bolum_2.md)
