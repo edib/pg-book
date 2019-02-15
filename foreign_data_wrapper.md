@@ -77,20 +77,21 @@ CREATE SERVER fdw_server
         FOREIGN DATA WRAPPER postgres_fdw
         OPTIONS (host '<ip_adresi', port '<port>', dbname '<dbadi>');
 ```
-* kullanıcı maplemesi
+* kullanıcı eşlemesi: erişendeki bir pg kullanıcısıyla, erişilendeki kullanıcının eşlenmesi gerekmektedir. 
+
 ```
 CREATE USER MAPPING FOR <local_user>
         SERVER fdw_server
         OPTIONS (user 'remote_user>', password '<password>');
-
-        ```
+```
 * başka kullanıcıları da maplemek gerekirse her bir kullanıcı için eklemek gerekiyor.
 ```
 CREATE USER MAPPING FOR <local_user>
         SERVER fdw_server
         OPTIONS (user 'remote_user>', password '<password>');
 ```
-* local schema tanımı
+* local schema tanımı: bundan sonrasında eğer tüm şema bağlanacaksa erişende yeni bir şema oluşturulmalıdır.
+
 ```
 create schema <local_schema>;
 ```
@@ -98,6 +99,7 @@ create schema <local_schema>;
 ```
 grant all on schema <local_schema> to <local_user>;
 GRANT all ON FOREIGN SERVER fdw_server TO <local_user>;
+
 ```
 * <local_user> kullanıcısına geciyoruz
 ```
@@ -118,11 +120,7 @@ CREATE foreign TABLE tb2 (a int, b text);
 CREATE foreign TABLE tb2 (a int, b text) server fdw_server;
 ```
 
-Not: (her yeni prod dumptan sonra, fdw yi kullanacak kullanıcı için user mapping yapmak gerekir)
-```CREATE USER MAPPING FOR local_user SERVER server OPTIONS (user 'user', password 'password');```
-
-
 Kaynaklar:
-https://wiki.postgresql.org/wiki/Foreign_data_wrappers
-http://pgxn.org/tag/fdw/
-https://www.postgresql.org/docs/current/static/fdwhandler.html
+* [Postgresql Wiki Foreign_data_wrappers ](https://wiki.postgresql.org/wiki/Foreign_data_wrappers)
+* [pgnx fdw ](http://pgxn.org/tag/fdw/)
+* [Postgresql fdwhandler](https://www.postgresql.org/docs/current/static/fdwhandler.html)
