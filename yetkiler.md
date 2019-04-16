@@ -1,4 +1,3 @@
-# Foreign Data Wrapper
 Postgresql'de Foreign Data Wrapper (fdw) başka veritabanı ya da veri kaynağını postgresql içerisine bağlayarak ondan standart sql komutlarıyla veri alınmasını varolan sisteminize entegre edilmesini sağlar.
 
 3 adet vt oluşturuyoruz ve masterdb asıl vt, fdw1 ve fdw2 ise yabancı vt olarak çalışacaklar.
@@ -96,9 +95,7 @@ CREATE USER MAPPING FOR <local_user>
 ```
 create schema <local_schema>;
 ```
-
-* local schema ve fdw servera bağlanacak user için yetki veriyoruz.
-
+*loca schema ve fdw servera bağlanacak user için yetki veriyoruz.
 ```
 grant all on schema <local_schema> to <local_user>;
 GRANT all ON FOREIGN SERVER fdw_server TO <local_user>;
