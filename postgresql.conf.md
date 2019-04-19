@@ -10,7 +10,7 @@ log_line_prefix='%t:%r:%u@%d:[%p]: '
 log_statement
 log_min_duration_statement
 ```
-## Memory Parameters
+## [Memory Parameters](http://www.interdb.jp/pg/pgsql02.html#_2.2.)
 ```
 shared_buffers # shared, duble buffer
 work_mem # non shared

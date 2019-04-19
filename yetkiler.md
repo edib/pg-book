@@ -1,126 +1,99 @@
-Postgresql'de Foreign Data Wrapper (fdw) başka veritabanı ya da veri kaynağını postgresql içerisine bağlayarak ondan standart sql komutlarıyla veri alınmasını varolan sisteminize entegre edilmesini sağlar.
+# Yetkiler
+* superuser (postgres): sınırlanamaz.
+* Yetkiler nesneler üzerinden çalışır.
+* Her nesne yaratıldığında o nesneye bir sahip atanır. Sadece sahibin `DROP`, `ALTER`  ve `REVOKE` yetkisi vardır. Gizli (implicit) şekilde nesne sahiplerine aittir ve atanamaz ve geri alınamaz.
+* Varsayılan olarak `public` şemasında tüm rollerin nesne yaratma yetkisi ve yarattığı nesnelerde tam yetkisi vardır. "`ROLE` oluşturulduğu anda geri alınması gerekir."
+* `with grant option` ile yetki verilen `ROLE` bu yetkiyi diğer kullanıcılara da aktarabilir.
 
-3 adet vt oluşturuyoruz ve masterdb asıl vt, fdw1 ve fdw2 ise yabancı vt olarak çalışacaklar.
-create database masterdb;
-```
-create database fdw1;
-create database fdw2;
-```
-Yabancı vtlere tek tek bağlanıp basit tablo oluşturuyoruz.
-```
-\c fdw1
-create table tb1 (id int, name text);
-\c fdw2
-create table tb2 (id int, name text);
-```
+### Postgres Kullanılabilir Yetkiler
+* SELECT (COPY TO),
 
-Ana vtye bağlanarak  üzerinde postgres_fdw eklentisini etkinleştiriyoruz ve diğer 2 vtyi bağlantı parametreleriyle asıl vtye bağlıyoruz.
-```
-\c masterdb
---  https://www.postgresql.org/docs/current/static/sql-createextension.html
-create extension postgres_fdw;
+* INSERT (COPY FROM),
 
-CREATE SERVER fdw1
-        FOREIGN DATA WRAPPER postgres_fdw
-        OPTIONS (host 'localhost', port '5432', dbname 'fdw1');
+* UPDATE, DELETE (ayrıca SELECT yetkisine de ihtiyaç duyar),
 
-CREATE SERVER fdw2
-        FOREIGN DATA WRAPPER postgres_fdw
-        OPTIONS (host 'localhost', port '5432', dbname 'fdw2');
-```
+* TRUNCATE, REFERENCES, TRIGGER, CREATE, CONNECT, TEMPORARY, EXECUTE, ve USAGE'tır.
+
+* Yetkiler GRANT ile verilir ve REVOKE ile alınır.
 
 ```
---- değiştirmek istersek (hangi parametreyi değiştirmek istersek sadece onu yazıyoruz. örneğin port)
-ALTER SERVER fdw1 OPTIONS (set port '5432');
--- cursor her veri çekişinde en fazla kaç row çekmelidir. Default 100
-ALTER SERVER my_fdw OPTIONS (fetch_size '10000');
--- eğer fdw nin read only olmasını istiyorsak
-ALTER SERVER my_fdw OPTIONS (updatable 'false');
+-- mehmet kullanıcısına defter tablosunda UPDATE yetkisi vermek için
+GRANT UPDATE ON defter TO mehmet;
+--ve geri almak için
+REVOKE UPDATE ON defter TO mehmet;
 ```
-fdw1 ve fdw2 deki yetkileri olan kullanıcıları buradaki bir kullanıcıya bağlantılıyoruz. Burada kolaylık olması için parola kullanılmamıştır.
-```
-CREATE USER MAPPING FOR postgres
-        SERVER fdw1
-        OPTIONS (user 'postgres', password '');
+* `ALL` yetkisi özel bir yetkidir ve o nesneyle ilgili ilişkili tüm yetkileri o `ROLE`e verir.
+* `PUBLIC` özel bir `ROLE`'dür  ve sistemdeki tüm diğer `ROLE`lere bir yetkiyi tanımlamak için kullanılır.
+* Ayrıca `GROUP` rolleri çok fazla veritabanı rolü olduğu durumlarda bunları daha kolay yönetmeye yarar.
 
-CREATE USER MAPPING FOR postgres
-        SERVER fdw2
-        OPTIONS (user 'postgres', password '');
-```
-Asıl vt üzerinde 2 adet schema oluşturuyoruz ve yabancı dbleri bunlara adresliyoruz ve tabloları kontrol ediyoruz ve 2 vtyide içeren sorgumuzu yazıyoruz.
-```
-create schema fdws1;
-IMPORT FOREIGN SCHEMA public
-    FROM SERVER fdw1 INTO fdws1;
 
-create schema fdws2;
-
-IMPORT FOREIGN SCHEMA public
-    FROM SERVER fdw2 INTO fdws2;
-```
-
--- Eğer sadece belirli tabloları import etmek istersek limit to ile o tabloları sınırlıyoruz.
-```
-IMPORT FOREIGN SCHEMA public
-	LIMIT TO (table1, table2)
-    FROM SERVER fdw2 INTO fdws2;
-
-\d fdws1.tb1
-\d fdws2.tb2
-
-select id,name from fdws1.tb1 union  select id, name from fdws2.tb2;
-```
-Eğer superuser yetkisi olmayan bir kullanıcı için fdw tanımı yaparsak;
-* server tanımı
-```
-CREATE SERVER fdw_server
-        FOREIGN DATA WRAPPER postgres_fdw
-        OPTIONS (host '<ip_adresi', port '<port>', dbname '<dbadi>');
-```
-* kullanıcı eşlemesi: erişendeki bir pg kullanıcısıyla, erişilendeki kullanıcının eşlenmesi gerekmektedir.
+### Postgresql role temelli yetki sistemi kullanır.
 
 ```
-CREATE USER MAPPING FOR <local_user>
-        SERVER fdw_server
-        OPTIONS (user 'remote_user>', password '<password>');
-```
-* başka kullanıcıları da maplemek gerekirse her bir kullanıcı için eklemek gerekiyor.
-```
-CREATE USER MAPPING FOR <local_user>
-        SERVER fdw_server
-        OPTIONS (user 'remote_user>', password '<password>');
-```
-* local schema tanımı: bundan sonrasında eğer tüm şema bağlanacaksa erişende yeni bir şema oluşturulmalıdır.
+CREATE USER/ROLE ...;
 
 ```
-create schema <local_schema>;
-```
-*loca schema ve fdw servera bağlanacak user için yetki veriyoruz.
-```
-grant all on schema <local_schema> to <local_user>;
-GRANT all ON FOREIGN SERVER fdw_server TO <local_user>;
+
+* `USER` login yetkisi olan bir `ROLE`'dür.  `ROLE`'lerde hiyerarşi olabilir. Yani bir `ROLE` diğer `ROLE`'ün altında yer alabilir. Yetkiler `ROLE`'lere bağlanır.
 
 ```
-* <local_user> kullanıcısına geciyoruz
-```
-\c - <local_user> # ya da
-set role= <local_user>;
-```
-* local userdan schemayı import ediyoruz.
-```
-IMPORT FOREIGN SCHEMA <remote_schema>
-    FROM SERVER fdw_server INTO <local_schema>;
-```
-remote sunucuda ddl işlemleri olursa aynısının local taraftada tekrar edilmesi gerekmektedir. Aksi durumda çalışmaz.
+CREATE ROLE role1;
+CREATE ROLE role2;
+GRANT role2 to role1;
 
 ```
-# eğer fdw de bir tablo oluşturusak
-CREATE foreign TABLE tb2 (a int, b text);
-# aynısını fdw sunucusunda tekrar ediyoruz
-CREATE foreign TABLE tb2 (a int, b text) server fdw_server;
-```
+* Açıklaması
+  - role1 role2 nin üyesi oldu.
+  - role1, role2'nin bütün yetkilerini de devraldı, kullanabilir.
+  - role1 `SET ROLE` diyerek role2'ye dönüşebilir.
 
-Kaynaklar:
-* [Postgresql Wiki Foreign_data_wrappers ](https://wiki.postgresql.org/wiki/Foreign_data_wrappers)
-* [pgnx fdw ](http://pgxn.org/tag/fdw/)
-* [Postgresql fdwhandler](https://www.postgresql.org/docs/current/static/fdwhandler.html)
+* Sistemde varsayılan olarak tanımlı yetkiler, `LOGIN`, `SUPERUSER`, `CREATEDB`, `CREATEROLE`, `REPLICATION`.
+
+* psql yetkileri gözden geçirmek için
+
+```
+postgres=# \dp
+                              Access privileges
+ Schema | Name | Type  |     Access privileges     | Column access privileges
+--------+------+-------+---------------------------+--------------------------
+ public | x    | table | postgres=arwdDxt/postgres |
+(1 row)
+
+```
+* Yukarıdaki harflerin okunuşu:
+  - <roladı>=xxxx -- role tanımlanmış yetkiler
+  - =xxxx -- public rolüne tanımlanmış yetkiler.
+
+* r- SELECT ("read")
+* w- UPDATE ("write")
+* a- INSERT ("append")
+* d- DELETE
+* D- TRUNCATE
+* x- REFERENCES
+* t- TRIGGER
+* arwdDxt - tüm yetkiler (tablolar için)
+* X- EXECUTE
+* U- USAGE
+* C- CREATE
+* c- CONNECT
+* T- TEMPORARY
+
+– tables, schema, tablespaces - hiç bir yetki yok.
+– databases - CONNECT, CREATE TEMP TABLE
+– functions - EXECUTE
+– languages - USAGE
+
+search path
+
+Linux sistemlerdeki PATH değişkenine benzer. Nesnelerin şemaya Postgresql.conf içerisinden değiştirilmediyse varsayılan search_path "$user", public'tir. Search_path'teki ilk şema aktif şema kabul edilir. Eğer tam yol verilmezse yaratılmak istenen her nesne aktif şema'da yaratılır. Eğer aktif olanda yoksa sırayla diğerlerinde aranır.
+
+# sessionda tanımlamak için
+SET search_path TO myschema, public;
+Gizli şemalar
+
+pgtempNN ve pg_catalog sırayla 1. ve 2. sırada aranır, sonra diğer şemalar aranır.
+
+-- aktif şemayı görmek için
+select current_schema();
+-- search_path'teki tüm şemaları verir.
+select current_schemas(true);

@@ -19,6 +19,7 @@
 
 * Herşey Dosyadır.
 
+
 ## Komut Satırı
 ```
 fdisk
@@ -43,6 +44,9 @@ ps / top / kill / killall / pkill(appname)
 true && echo "ok"
 false && echo "ok"
 ```
+### kısa yollar
+[1](https://media.cheatography.com/storage/thumb/davechild_linux-command-line.750.jpg?last=1463102294) [2](https://www.git-tower.com/blog/content/posts/32-command-line-cheat-sheet/command-line-cheat-sheet-large01.png)
+[3](https://nguyenxuanbinhminh.com/wp-content/uploads/2018/07/Linux-command-cheat-sheet.png)
 
 ## Kullanıcı Yönetimi
 * /etc/passwd : Kullanıcılara ait temel bilgiler
