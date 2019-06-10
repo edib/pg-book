@@ -208,5 +208,6 @@ pgbackrest --log-level-console=info --stanza=test (archive-push|archive-get) /$P
 
   Bunun için nfs kullanılabilir.
 
+  
   * Bir sonraki:
-  [Veritabanı Nesneler](nesneler.md)
+  [Örnek Veri](ornek_veri.md)

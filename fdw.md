@@ -129,4 +129,4 @@ Kaynaklar:
 * [Postgresql fdwhandler](https://www.postgresql.org/docs/current/static/fdwhandler.html)
 
 * Bir sonraki:
-[streaming replication](streaming_replication.md)
+[streaming replication](replikasyon.md)

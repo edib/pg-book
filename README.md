@@ -9,7 +9,7 @@
 * [dış veri bağlantısı](fdw.md)
 * [fiziksel replikasyon](replikasyon.md)
 * [yedekleme](yedekleme.md)
-* [Veritabanı Nesneleri](nesneler.md)
+* [Örnek Veri](ornek.md)
 
 
  ## Yardımcı

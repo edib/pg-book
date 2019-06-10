@@ -1,5 +1,3 @@
-# 1. Gün
-
 ## Virtualbox ve Vagrant kurulumu
 İndirin ve kurun
 

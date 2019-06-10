@@ -100,4 +100,4 @@ select current_schemas(true);
 ```
 
 * Bir sonraki:
-[Foreign Data Wrapper](foreign_data_wrapper.md)
+[Foreign Data Wrapper](fdw.md)
