@@ -1,8 +1,5 @@
-# 4.gün
-## Yetkiler
-
+# Yedekleme
 ## pgbackrest
-
 ### DB ve Backup aynı sunucu üzerinde:  
 İki seçenekli kurulum vardır.
 a. db-master üzerinde pgbackrest ile kendi üzerine yedek almak. 
@@ -15,7 +12,7 @@ db-server:/etc/pgbackrest.conf, Backrest her bir postgrsql cluster yedeğine "s
 ```
 [test]
 pg1-path=/var/lib/pgsql/11/data
- 
+
 [global]
 repo1-path=/var/lib/pgbackrest
 ```
@@ -25,7 +22,7 @@ db-server:``/var/lib/pgsql/11/data/postgresql.conf`` içerisinde aşağıdaki de
 archive_command = 'pgbackrest --stanza=test archive-push %p'
 archive_mode = on
 listen_addresses = '*'
-max_wal_senders = 3 
+max_wal_senders = 3
 wal_level = replica
 ```
 
@@ -72,16 +69,53 @@ stanza: test
 
 ## Backup farklı sunucu üzerinde
 ### Kurulum
+PostgreSQL sunucusu için gerekli olan pgdg deposunun kurulu olması gerekir. VT ve backup sunucularına birden aşağıdaki paketi kurun.
 ```
+#centos
+yum install pgbackrest
+
 ```
 ### ssh key değişimi
+pgbackrest, ssh üzerinden çalıştığı için vt sunucusunun ve backup sunucusunun postgres (varsayılan) kullanıcılarının ssh üzerinden birbirlerine parolasız erişmeleri gerekmektedir.
+2 makinde de postgres kullanıcılarının ssh key oluşturmadığını varsayacağız.
+vt sunucusunda postgres kullanıcısındayken,
+```
+su - postgres
+# Enter'a basarak geçin.
+ssh-keygen
+```
+* `/var/lib/pgsql/.ssh/id_rsa.pub` dosyasının içeriğini
+backup sunucusundaki `.ssh/authorized_keys` dosyanına ekleyin.
+
+* backup sunucusunda
+```
+su - postgres
+# Enter'a basarak geçin.
+ssh-keygen
+```
+* `/var/lib/pgsql/.ssh/id_rsa.pub` dosyasının içeriğini
+VT sunucusundaki `.ssh/authorized_keys` dosyanına ekleyin.
+
+* test edin.
+```
+# vt sunucusu
+su - postgres
+# otomatik bağlanması gerekir.
+ssh {backupserverip}
 ```
 ```
+# backup sunucusu
+su - postgres
+# otomatik bağlanması gerekir.
+ssh {backupserverip}
+```
+
 ### /etc/pgbackrest.conf ayarları
 
 Bir postgresql database makinesi (db-master) ve bir de backup makinesi (db-backup) gerekmektedir. 2 makine postgres kulllanıcısı ile parolasız bir şekilde birbirlerine erişmesi gerekmektedir. Yukarıdakinden farklı olarak pgbackrest.conf dosyası aşağıdaki şekilde olmalıdır.
 
-__db-master:/etc/pgbackrest.conf__
+** db-master:/etc/pgbackrest.conf **
+
 ```
 [stanza-adi]
 pg1-path=/var/lib/postgresql/11/<clusteradi>
@@ -104,7 +138,7 @@ process-max=8
 process-max=8
 ```
 
-__db-backup:/etc/pgbackrest.conf__
+**db-backup:/etc/pgbackrest.conf**
 ```
 [global]
 repo1-path=/var/lib/pgbackrest
@@ -137,12 +171,12 @@ restore opsiyonu sadece 2 yerde çalışır. Master ve backup sunucusunda. 
 ```
 sudo -u postgres pgbackrest --stanza=test --log-level-console=info restore
 ```
-Başka path'e restore etmek için "--pg1-path" parametresi belirleyebiliyoruz. Aşağıdaki komutu <baska_dizin> dizinini 700 yetkisiyle oluşturduktan sonra çalıştırırsak bu dizine son backup'ı restore eder. 
+Başka path'e restore etmek için "--pg1-path" parametresi belirleyebiliyoruz. Aşağıdaki komutu <baska_dizin> dizinini 700 yetkisiyle oluşturduktan sonra çalıştırırsak bu dizine son backup'ı restore eder.
 ```
 sudo -u postgres pgbackrest --stanza=test  --pg1-path=/[baska]/[dizin]  --log-level-console=info restore
 ```
-* Eğer cluster üzerinde tablespaceler varsa bu tablespace pathlerini elle oluşturmak ve adreslemek gerekmektedir. 
-* Sonrasında restore edilmiş sunucu da postgresql.conf içerisinde sistemin kaynaklarına uygun gerekli ayarlar yapılmalıdır. 
+* Eğer cluster üzerinde tablespaceler varsa bu tablespace pathlerini elle oluşturmak ve adreslemek gerekmektedir.
+* Sonrasında restore edilmiş sunucu da postgresql.conf içerisinde sistemin kaynaklarına uygun gerekli ayarlar yapılmalıdır.
 * Zaman belirtilirse __kesinlikle__ verilen zamandan bir önceki **backup set**inin belirtilmesi gerekmektedir. Yoksa restore point olarak **son backup noktası** alır. 
 ```
 pgbackrest --stanza=mystsanza --type time "--target=YYYY-mm-dd h:d:s" \
@@ -160,22 +194,19 @@ Eskisinin üstüne sadece değişen yerleri aktarsın istersek, delta parametres
 pgbackrest --stanza=test --delta --log-level-console=info restore
 ```
 
-### Notlar: 
-* Eğer tek bir db restore edersek bu db'yi recovery mode restore edemeyiz. O yüzden xlogların resetlenip restore başlattığımızdaki genel bir zamana döner.(?) 
-```
-pg_resetxlog -f /[geriyukleme]/[dizini]/
-```
-Eğer local backup servera dönmek istiyorsak
+### Notlar:
+* __Eğer local backup servera dönmek istiyorsak__
 ```
 pgbackrest --stanza=test --reset-pg1-host --repo1-path=/[pgbackrest]/[dizini] \
 --pg1-path=/[geriyukleme]/[dizini] --log-level-console=info restore
 ```
-Bazı durumlarda archive-push ve archive-get komutlarını doğrudan kullanmak gerekebilir. 
+Bazı durumlarda archive-push ve archive-get komutlarını doğrudan kullanmak gerekebilir.
 ```
 pgbackrest --log-level-console=info --stanza=test (archive-push|archive-get) /$PG_HOME/pg_wal/wal_dosyasi
 ```
+* __pgbackrest master VT sunucusu hariç uzak sunucuya restore etmeyi desteklemez.__
 
+  Bunun için nfs kullanılabilir.
 
-
-
-
+  * Bir sonraki:
+  [Veritabanı Nesneler](nesneler.md)

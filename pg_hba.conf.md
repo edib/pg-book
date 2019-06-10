@@ -1,14 +1,15 @@
 ##  Host-based Authenticatiton
 * İstemci erişimi denetimi bu dosyayla sağlanır.
-* Varsayılanda sadece localhost erişimine izin verir.
+* Varsayılanda sadece localhost erişimine izin verir. İlk kurulumda, dışarıdan erişime izin vermez.
 * Her bir satırı 1 kayıttır.
 * replication erişimi ayrı tanımlanır.
-* Nerede bulmak için
 * [Doküman](https://www.postgresql.org/docs/11/auth-pg-hba-conf.html)
+psql satırından,
 
 ```
 show hba_file;
 ```
+
 ### İçeriği
 
 ```
@@ -25,32 +26,47 @@ hostnossl  database  user  IP-address  IP-mask  auth-method  [auth-options]
 ### [auth-method]
 * trust
 
+  parolasız, güvenilen erişim
+
 * reject
+
+  bağlantıyı reddet
 
 * md5
 
-* scram-sha-256: yeni geldi.
+  md5 hash li parola koruması
 
-* password:
-    unencrypted
+* scram-sha-256: (v10 la birlikte geldi)[[+]](http://hacksoclock.blogspot.com/2018/10/how-to-set-up-scram-sha-256.html)
 
-* ident:
-  operating system user, tcp connections.
+  sha-256 şifreleme
 
-* peer:
-  only available for local connections.
+* password
 
-* ldap:
-  Authenticate using an LDAP server.
+  şifrelenmemiş parola
 
-* radius:
-  Authenticate using a RADIUS server.
+* ident
 
-* cert:
-  Authenticate using SSL client certificates.
+  işletim sistemi kullanıcısı, tcp port üzerinden bağlantı için
 
-* pam:
-  Authenticate using the Pluggable Authentication Modules (PAM) service provided by the operating system.
+* peer
+
+  local, socket bağlantısı için
+
+* ldap
+
+  bir LDAP sunucudan kullanıcı bilgilerini kullanmak için
+
+* radius
+
+  bir RADIUS sunucudan kullanıcı bilgilerini kullanmak için
+
+* cert
+
+  SSL istemci sertifikalarını kullanrak bağlanmak için.
+
+* pam
+
+  İşletim sistemi tarafından sağlanan Pluggable Authentication Modules (PAM) servisini kullanarak bağlanmak için.
 
 ### [auth-options]
 name=value

@@ -127,3 +127,6 @@ Kaynaklar:
 * [Postgresql Wiki Foreign_data_wrappers ](https://wiki.postgresql.org/wiki/Foreign_data_wrappers)
 * [pgnx fdw ](http://pgxn.org/tag/fdw/)
 * [Postgresql fdwhandler](https://www.postgresql.org/docs/current/static/fdwhandler.html)
+
+* Bir sonraki:
+[streaming replication](streaming_replication.md)

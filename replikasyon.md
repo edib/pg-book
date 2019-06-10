@@ -1,4 +1,3 @@
-##
 ## Streaming Replication
 
 Postgresql'de başka paket kurmadan hazır olarak replication gelmektedir. Bu replikasyon active-passive/master/slave çalışmaktadır ve istenildiği zaman multiple slave mimariye dönüştürülebilmektedir.
@@ -132,5 +131,5 @@ sonra postgresql.conf içerisindeki aşağıdaki satırı etkin hale getiriyoruz
 ```
 synchronous_standby_names = '<replika_adi>'
 ```
-
-[4. Bölüm](4.bolum.md)
+* Bir sonraki:
+[Yedekleme](yedekleme.md)

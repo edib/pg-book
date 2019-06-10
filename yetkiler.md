@@ -90,10 +90,14 @@ Linux sistemlerdeki PATH değişkenine benzer. Nesnelerin şemaya Postgresql.con
 # sessionda tanımlamak için
 SET search_path TO myschema, public;
 Gizli şemalar
-
 pgtempNN ve pg_catalog sırayla 1. ve 2. sırada aranır, sonra diğer şemalar aranır.
 
+```
 -- aktif şemayı görmek için
 select current_schema();
 -- search_path'teki tüm şemaları verir.
 select current_schemas(true);
+```
+
+* Bir sonraki:
+[Foreign Data Wrapper](foreign_data_wrapper.md)

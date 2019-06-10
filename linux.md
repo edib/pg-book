@@ -19,6 +19,57 @@
 
 * Herşey Dosyadır.
 
+# Dizin yapısı [[+]](https://www.wikiwand.com/en/Filesystem_Hierarchy_Standard)
+```
+/ : Primary hierarchy root and root directory of the entire file system hierarchy.
+/bin :Essential command binaries that need to be available in single user mode; for all users, e.g., cat, ls, cp.
+/boot :Boot loader files, e.g., kernels, initrd.
+/dev : Device files, e.g., /dev/null, /dev/disk0, /dev/sda1, /dev/tty, /dev/random.
+/etc : Host-specific system-wide configuration files
+/etc/opt : Configuration files for add-on packages that are stored in /opt.
+/etc/sgml : Configuration files, such as catalogs, for software that processes SGML.
+/etc/X11 : Configuration files for the X Window System, version 11.
+/etc/xml : Configuration files, such as catalogs, for software that processes XML.
+/home :Users' home directories, containing saved files, personal settings, etc.
+/lib : Libraries essential for the binaries in /bin and /sbin.
+/lib<qual> : Alternative format essential libraries. Such directories are optional, but if they exist, they have some requirements.
+/media : Mount points for removable media such as CD-ROMs (appeared in FHS-2.3 in 2004).
+/mnt : Temporarily mounted filesystems.
+/opt : Optional application software packages.[6]
+/proc : Virtual filesystem providing process and kernel information as files.
+/root : Home directory for the root user.
+/run : Run-time variable data: Information about the running system since last boot.
+/sbin : Essential system binaries, e.g., fsck, init, route.
+/srv :
+/sys : Contains information about devices, drivers, and some kernel features.
+/tmp : Temporary files
+/usr : Secondary hierarchy for read-only user data
+/usr/bin : Non-essential command binaries
+/usr/include : Standard include files.
+/usr/lib : Libraries for the binaries in /usr/bin and /usr/sbin.
+/usr/lib<qual> : Alternative format libraries, e.g. /usr/lib32 for 32-bit libraries on a 64-bit machine (optional).
+/usr/local
+Tertiary hierarchy for local data, specific to this host. Typically has further subdirectories, e.g., bin, lib, share.[9]
+/usr/sbin
+Non-essential system binaries, e.g., daemons for various network-services.
+/usr/share
+Architecture-independent (shared) data.
+/usr/src
+Source code, e.g., the kernel source code with its header files.
+/usr/X11R6
+X Window System, Version 11, Release 6 (up to FHS-2.3, optional).
+/var : Variable files
+  /var/cache : Application cache data.
+  /var/lib : State information. Persistent data
+  /var/lock : Lock files
+  /var/log : Log files
+  /var/mail: Mailbox files
+  /var/opt : Variable data
+  /var/run : Run-time variable data.
+  /var/spool: Spool for tasks waiting to be processed
+  /var/tmp : Temporary files
+
+```
 
 ## Komut Satırı
 ```
