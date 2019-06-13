@@ -47,7 +47,7 @@ postgres  2605  2567  0 09:51 ?        00:00:00 postgres: logical replication la
 * [Örnek-1](http://rachbelaid.com/introduction-to-postgres-physical-storage/)
 * [Örnek-2](http://www.interdb.jp/pg/)
 
-* `database cluster`, we call a database cluster the storage area on disk. A database cluster is a collection of databases that is managed by a single instance of a running database server.
+* `database cluster`, Veritabanlarının bulunduğu, postgres servisinin çalıştığı disk alanı.
 * `tuple`: satır
 * `relation` tablo
 * `filenode` table ya da index'in dosya gösterimi

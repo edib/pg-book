@@ -30,6 +30,8 @@ autovacuum_max_workers
 autovacuum_work_mem
 ```
 
+
+
 Kaynaklar
 ```
 https://www.postgresql.fastware.com/blog/back-to-basics-with-postgresql-memory-components

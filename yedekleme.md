@@ -208,6 +208,33 @@ pgbackrest --log-level-console=info --stanza=test (archive-push|archive-get) /$P
 
   Bunun için nfs kullanılabilir.
 
-  
+## Mantıksal Yedekleme
+pg_dump ve akrabaları
+```
+# text dump alır
+pg_dump {vt_adi} > dump.dosyasi.dmp
+## yada
+pg_dump {vt_adi} -f dump.dosyasi.dmp
+
+# binary formatta alır, sıkıştırır sadece `pg_restore` komutuyla restore edilebilir.
+pg_dump {vt_adi} -Fc dump.dosyasi.dmp
+
+# sadece yapı
+pg_dump {vt_adi} -Fc -s yapi.dump.dosyasi.dmp
+
+# sadece veri
+pg_dump {vt_adi} -Fc -a veri.dump.dosyasi.dmp
+
+# clusterdaki herşeyi alır
+pg_dumpall {vt_adi} -f all.dump.dosyasi.dmp
+
+```
+### restore
+```
+psql {vt_adi} < text.sql
+
+pg_restore -d {vt_adi} dump.dosyasi.dump
+```
+
   * Bir sonraki:
   [Örnek Veri](ornek_veri.md)
