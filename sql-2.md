@@ -15,9 +15,10 @@ HAVING
    SUM (amount) > 200;
 ```
 
-### join türleri [[+]]](https://66.media.tumblr.com/11ba835a623fdedfb18153f14c8d8105/tumblr_pkthgeel1f1rh9ffao1_500.jpg)
-[Gerçek](https://blog.jooq.org/2016/07/05/say-no-to-venn-diagrams-when-explaining-joins/)
-[Görsel Join](http://joins.spathon.com/)
+### join türleri
+ - [Komik](https://66.media.tumblr.com/11ba835a623fdedfb18153f14c8d8105/tumblr_pkthgeel1f1rh9ffao1_500.jpg)
+ - [Gerçek](https://blog.jooq.org/2016/07/05/say-no-to-venn-diagrams-when-explaining-joins/)
+ - [Görsel Join](http://joins.spathon.com/)
 
 ```
 CREATE TABLE sepet_a (
