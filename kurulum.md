@@ -80,6 +80,32 @@ SHOW server_version;
 psql --help
  ```
 
+## Sunucu Yönetimi
+
+### Cluster
+Postgres çalışan servisi ve onun veri dizini birlikte `cluster` denmektedir.
+Postgres servisinin paket yerleri, dağıtıma göre değişir. Bir makine üzerine tercih edilmemekle birlikte birden çok cluster kurulabilir.
+* Tek servis ve port
+* Tek veri dizini
+* Tek ayar dosyası/dosya grubu
+* Dağıtık cluster değildir.
+* Veritabanı sunucusu'da denir.
+
+
+* **RPM**
+
+```
+Binaries: /usr/pgsql-${version}/bin
+Data: /var/lib/pgsql/${version}/data
+
+```
+
+**`Cluster` yönetimi**
+* pg_ctl utility
+* init.d scripts / systemd services
+
+
+
 Postgresql ayar dosyaları: Önemli diyebileceğimiz 2 farklı ayar dosyası vardır.
 ## [postgresql.conf](postgresql.conf.md) [*](https://postgresqlco.nf/en/doc/param/)
 varsayılan yeri ```/var/lib/pgsql/11/data```. Cluster'ın çalışması gereken tüm ayarları içerir.içinde bir çok parametre vardır. postgresql.conf a alternatif olarak postgresql.auto.conf dosyası da özel ayarların yazılması için kullanılabilir.

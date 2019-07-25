@@ -71,7 +71,7 @@ X Window System, Version 11, Release 6 (up to FHS-2.3, optional).
 
 ```
 
-## Komut Satırı
+## [Komut Satırı](https://towardsdatascience.com/basics-of-bash-for-beginners-92e53a4c117a)
 ```
 fdisk
 # 2TB sorunu

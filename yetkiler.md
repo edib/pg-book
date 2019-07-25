@@ -1,19 +1,35 @@
-# Yetkiler
+**PostgreSQL'de Rol Kavramı :** PostgreSQL, veritabanı erişim izinlerini rol kavramı ile yönetir. Bir rol, bir veritabanı kullanıcısı veya bu veritabanı kullanıcılarından oluşan bir grup olabilir.
+* Tek kullanıcı bir rol olabilir, çünkü bir kullanıcı aynı zamanda bir roldür.
+* Roller, veritabanı nesnelerinin (örn. tablolar) sahibi olabilir.
+* Roller, veritabanı kümesinde (database cluster) geçerlidir.
+
+*byildirim adında bir kullanıcı oluşturalım, superuser yetkisi olsun ve şifresi '12345' olsun;*
+```
+CREATE user byildirim with superuser password '12345';
+```
+
+### Yetkiler
+
+Bir nesne oluşturulduğunda, bir nesne sahibi olarak atanır. Çoğu nesne türü için başlangıç durumu sadece sahibinin nesneyle ilgili herhangi bir şey yapabilmesine olanak sağlar.
+* owner : Normalde nesneyi yaratan roldür. Nesne yaratılırken belirtilebilir.
+```
+
+```
+* Nesne için **ALTER** komutu ile yeni sahibine bir nesne atanabilir.
+
+**Rol Üyeliği** (ROLE MEMBERSHIP) : Yetkilerin yönetimini kolaylaştımak için genellikle gruplandırma yolu tercih edilir. Bu şekilde yetkiler bir gruba bütün olarak verilebilir veya gruptan bütün olarak kaldırılabilir.
+
 * superuser (postgres): sınırlanamaz.
 * Yetkiler nesneler üzerinden çalışır.
 * Her nesne yaratıldığında o nesneye bir sahip atanır. Sadece sahibin `DROP`, `ALTER`  ve `REVOKE` yetkisi vardır. Gizli (implicit) şekilde nesne sahiplerine aittir ve atanamaz ve geri alınamaz.
 * Varsayılan olarak `public` şemasında tüm rollerin nesne yaratma yetkisi ve yarattığı nesnelerde tam yetkisi vardır. "`ROLE` oluşturulduğu anda geri alınması gerekir."
 * `with grant option` ile yetki verilen `ROLE` bu yetkiyi diğer kullanıcılara da aktarabilir.
 
-### Postgres Kullanılabilir Yetkiler
+### Postgres Kullanılabilir Yetki Türleri
 * SELECT (COPY TO),
-
 * INSERT (COPY FROM),
-
 * UPDATE, DELETE (ayrıca SELECT yetkisine de ihtiyaç duyar),
-
 * TRUNCATE, REFERENCES, TRIGGER, CREATE, CONNECT, TEMPORARY, EXECUTE, ve USAGE'tır.
-
 * Yetkiler GRANT ile verilir ve REVOKE ile alınır.
 
 ```
@@ -83,7 +99,7 @@ postgres=# \dp
 – functions - EXECUTE
 – languages - USAGE
 
-search path
+#### search path
 
 Linux sistemlerdeki PATH değişkenine benzer. Nesnelerin şemaya Postgresql.conf içerisinden değiştirilmediyse varsayılan search_path "$user", public'tir. Search_path'teki ilk şema aktif şema kabul edilir. Eğer tam yol verilmezse yaratılmak istenen her nesne aktif şema'da yaratılır. Eğer aktif olanda yoksa sırayla diğerlerinde aranır.
 
@@ -98,6 +114,26 @@ select current_schema();
 -- search_path'teki tüm şemaları verir.
 select current_schemas(true);
 ```
+
+```
+-- login tanımı yoksa giriş yapamaz.
+CREATE ROLE {bir_rol} PASSWORD '{bir_parola}' LOGIN;
+CREATE USER {bir_rol} PASSWORD '{bir_parola}';
+
+-- schema yarat.
+CREATE SCHEMA  AUTHORIZATION {bir_rol};
+
+-- public erişimini kaldır.
+REVOKE ALL ON SCHEMA public FROM {bir_rol};
+
+-- search path i değiştir.
+ALTER ROLE {bir_rol} SET search_path TO {bir_sema};
+
+-- schema yetkisi değiştir.
+alter schema {bir_sema} owner to {bir_rol};
+
+```
+
 
 * Bir sonraki:
 [Foreign Data Wrapper](fdw.md)

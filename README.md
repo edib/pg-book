@@ -1,5 +1,6 @@
 # Ana Konular
 * [linux](linux.md)
+* [giriş](giris.md)
 * [kurulum](kurulum.md)
 * [psql](psql.md)
 * [dosya sistemi](filesystem.md)

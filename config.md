@@ -3,7 +3,8 @@
 ```
 -- Config Dosyası içeriği
 select * from pg_file_settings;
-
+-- buradaki her değer show ile çağrılabilir.
+show {birdeğer};
 -- config dosyasını değiştiriyoruz.
 alter system set work_mem='32MB';
 -- confige bakınca göreceğiz.
@@ -53,18 +54,26 @@ postgres  2605  2567  0 09:51 ?        00:00:00 postgres: logical replication la
 * `filenode` table ya da index'in dosya gösterimi
 * [`block`](http://www.interdb.jp/pg/pgsql01.html#_1.3.) ya da [`page`](http://www.interdb.jp/pg/img/fig-1-04.png): 8kb postgres depolama birimi
 * `CTID` tablodaki kayıt sürümünü verir.
-
 * `OID`: nesnelerin obje tanımlayıcısı
 * `VACUUM`, eski kayıtları temizleme işlemi
 
 ## Process Mimarisi
 * [Buffer Manager](http://www.interdb.jp/pg/img/fig-8-02.png)
 
+### logger
+* db olay kayıtlarını yazar
+```
+--psql
+show log_directory;
+show log_filename;
+```
+
 ### background writer
+* `dirty page`: bellekteki değişenler
 * Devamlı dirty page'leri diske yazar.`parametreler`
 
 ### checkpointer
-* belli aralıklarla yazar.[1](http://www.interdb.jp/pg/pgsql09.html#_9.7.)
+* dirty page'leri belli aralıklarla yazar.[1](http://www.interdb.jp/pg/pgsql09.html#_9.7.)
 
 ### walwriter
 * transaction log [1](http://www.interdb.jp/pg/pgsql09.html#_9.9.)

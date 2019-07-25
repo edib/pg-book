@@ -166,3 +166,7 @@ EXCEPT
    INNER JOIN film ON film.film_id = inventory.film_id
 ORDER BY title;
 ```
+
+### [Aggregate Functions](http://www.postgresqltutorial.com/postgresql-aggregate-functions/)
+
+### [Window Functions](http://www.postgresqltutorial.com/postgresql-window-function/)

@@ -1,13 +1,65 @@
 ## initdb özel ayarlar
 
-* data-checksum'ı etkinleştirmek için
+### Sadece cluster yolunu değiştir
+* eğer farklı dizin seçilirse paket yöneticisisinin systemd dosyasından cluster data dosyasının değiştirilmesi gerekir.
+
+`/usr/lib/systemd/system/postgresql-11.service`
+
+* ikinci cluster'ı 1. den üretmek için
+
 ```
-export PGSETUP_INITDB_OPTIONS="--data-checksums"
+cp /usr/lib/systemd/system/postgresql-11.service /usr/lib/systemd/system/postgresql-11-2.service
+
 ```
 
-* Türkçe utf8 olarak oluşturmak için
+* Yerini hatırlamazsak  
+
 ```
-export PGSETUP_INITDB_OPTIONS="-k --encoding='UTF-8' --lc-collate='tr_TR.UTF-8' --lc-ctype='tr_TR.UTF-8'"
+vi `rpm -ql postgresql11-server | grep systemd`
+```
+Bu dosyanın içerisinde aşağıdaki satırı değiştiriyoruz.
+```
+# önceki
+Environment=PGDATA=/var/lib/pgsql/11/data/
+
+# sonraki
+Environment=PGDATA=/var/lib/pgsql/11/veri/
+```
+
+* servisi başlangıçta çalışır şekilde aktif ediyor.
+
+```
+systemctl enable postgresql-11
+
+systemctl edit postgresql-11
+
+# bunu değiştiriyoruz.
+Environment=PGDATA=/var/lib/pgsql/11/veri/
+
+systemctl daemon-reload
+
+systemctl cat postgresql-11
+# en sonda
+
+# /etc/systemd/system/postgresql-11.service.d/override.conf
+Environment=PGDATA=/var/lib/pgsql/11/veri/
+
+# servisi başlatıyoruz.
+systemctl start postgresql-11
+
+```
+
+### cluster init ayarlarını değiştir.
+
+* data-checksum'ı etkinleştirmek için
+* Türkçe utf8 olarak oluşturmak için
+* cluster path değiştirmek için
+
+```
+su - postgres
+/usr/pgsql-11/bin/initdb --data-checksums --encoding='UTF-8' --lc-collate='tr_TR.UTF-8' --lc-ctype='tr_TR.UTF-8' --pgdata='/var/lib/pgsql/11/veri/'
+
+# 2. cluster ise port değiştiriyoruz.
 ```
 [Diğer seçenekler için](https://www.postgresql.org/docs/11/app-initdb.html)
 
@@ -25,36 +77,10 @@ SELECT name FROM unnest(ARRAY[
 ```
 * Cluster oluşturulduğu zaman tekrar encoding değiştirmek mümkün değildir. Tek yöntem mantıksal yedeğini alıp başka bir Cluster oluşturup ona aktarmaktır.
 
-## Dizini değiştirmek için
-- örneğin /var/lib/pgsql/11/veri dizini
-```
-mkdir /var/lib/pgsql/11/veri
-chown -R postgres. /var/lib/pgsql/11/veri
-chmod -R 700 /var/lib/pgsql/11/veri
-```
-- systemd yöntemiyle cluster dizinini değiştiriyoruz.
-```
-systemctl edit postgresql-11.service
-```
-- açılan dosya içerisie aşağıdakini ekleyin.
-```
-[Service]
-Environment=PGDATA=/var/lib/pgsql/11/veri
-```
-- yaptığınız ayarı etkinleştirin.
-```
-systemctl daemon-reload
-```
-
 #  postgres yöntemi
 * Cluster oluşturma elle de yapılabilir.
 
 ```
-dizin="/var/lib/pgsql/11/veri"
-mkdir $dizin
-chown -R postgres. $dizin
-chmod -R 700 $dizin
-
 # seçenek 1
 sudo -u postgres /usr/pgsql-11/bin/initdb -D $dizin -k
 
@@ -64,30 +90,3 @@ sudo -u postgres /usr/pgsql-11/bin/pg_ctl init -D $dizin -o "-k"
 ## servisi başlat.
 sudo -u postgers /usr/pgsql-11/bin/pg_ctl -D $dizin start
 ```
-* eğer farklı dizin seçilirse paket yöneticisisinin systemd dosyasından cluster data dosyasının değiştirilmesi gerekir.
-`/usr/lib/systemd/system/postgresql-11.service`
-
-* Yerini hatırlamazsak  
-```
-vi `rpm -ql postgresql11-server | grep systemd`
-```
-Bu dosyanın içerisinde aşağıdaki satırı değiştiriyoruz.
-```
-# önceki
-Environment=PGDATA=/var/lib/pgsql/11/data/
-
-# sonraki
-Environment=PGDATA=/var/lib/pgsql/11/veri/
-```
-
-
-
-```
-
-# servisi başlangıçta çalışır şekilde aktif ediyor.
-ll /etc/systemd/system/multi-user.target.wants/postgresql-11.service
-systemctl enable postgresql-11
-ll /etc/systemd/system/multi-user.target.wants/postgresql-11.service
-
-# servisi başlatıyoruz.
-systemctl start postgresql-11

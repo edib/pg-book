@@ -31,6 +31,13 @@ psql
 -- kullanıcılar, roller
 \du
 -- vb.
+
+\di
+
+\do
+
+\de (edit)
+
 ```
 
 * Bir sonraki:
