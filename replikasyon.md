@@ -34,8 +34,8 @@ systemctl restart postgresql
 
 Slave SunucuSlave'de servisi durduruyoruz ve data klasörünü siliyoruz.
 
-systemctl stop  postgresql
 ```
+systemctl stop  postgresql
 rm -rf <postgresql_data_directory>
 ```
 
@@ -74,7 +74,11 @@ select pg_is_in_recovery();
  t
 (1 row)
 
+```
+
 Master sunucuda aşağıki sorgular çalıştırılarak replikasyonun çalışıp çalışmadığı kontrol edilebilir.
+
+```
 select * from pg_replication_slots ;
 -[ RECORD 1 ]-------+----------
 slot_name           | r1
