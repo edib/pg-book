@@ -58,6 +58,7 @@ primary_conninfo = 'user=<replicationuser> host=<ipofmaster> port=5432 sslmode=p
 primary_slot_name = '<a replication slot name>'
 ```
 
+
 Ubuntu sistemlerde postgresql.conf dosyası <postgresql_data_directory> dizininden ayrık bir yerde olacağından bu dosyanın ilgili satırını sadece okunur bağlantıları kabul etsin diye aşağıdaki şekilde değiştiriyoruz.
 ```
 hot_standby = on
@@ -131,5 +132,15 @@ sonra postgresql.conf içerisindeki aşağıdaki satırı etkin hale getiriyoruz
 ```
 synchronous_standby_names = '<replika_adi>'
 ```
+
+```
+psql -c "select application_name,client_addr,state,sent_location,write_location,flush_location,replay_location
+ from pg_catalog.pg_stat_replication order by 1"
+psql  -c "select slot_name,active,xmin,restart_lsn from pg_catalog.pg_replication_slots"
+psql -c "SELECT * from pg_stat_archiver;"
+psql -c "SELECT pg_current_xlog_location(), pg_xlogfile_name(pg_current_xlog_insert_location()) insert_location, pg_xlogfile_name(pg_current_xlog_location()) write_location, pg_xlogfile_name(pg_current_xlog_flush_location()) flush_location;"
+
+```
+
 * Bir sonraki:
 [Yedekleme](yedekleme.md)

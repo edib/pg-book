@@ -1,4 +1,10 @@
 # Yedekleme
+## mantıksal Yedekleme
+pg_dumpall -r > roller.sql
+create database  yeniyeri;
+pg_dump -d eskidb -f eskidb.sql
+cat eskidb.sql | psql -d yeniyeri
+
 ## pgbackrest
 ### DB ve Backup aynı sunucu üzerinde:  
 İki seçenekli kurulum vardır.
@@ -78,36 +84,39 @@ yum install pgbackrest
 ### ssh key değişimi
 pgbackrest, ssh üzerinden çalıştığı için vt sunucusunun ve backup sunucusunun postgres (varsayılan) kullanıcılarının ssh üzerinden birbirlerine parolasız erişmeleri gerekmektedir.
 2 makinde de postgres kullanıcılarının ssh key oluşturmadığını varsayacağız.
+
+vt sunucusunda root kullanıcısındayken
+```
+passwd postgres
+```
 vt sunucusunda postgres kullanıcısındayken,
+
 ```
-su - postgres
 # Enter'a basarak geçin.
 ssh-keygen
+ssh-copy-id -i .ssh/id_rsa <backup_sunucusu>
+ssh <backup_sunucusu>
 ```
-* `/var/lib/pgsql/.ssh/id_rsa.pub` dosyasının içeriğini
-backup sunucusundaki `.ssh/authorized_keys` dosyanına ekleyin.
+backup sunucusunda root kullanıcısındayken
+```
+passwd -d postgres
+```
 
-* backup sunucusunda
+backup sunucusunda root kullanıcısındayken
 ```
-su - postgres
+passwd postgres
+```
+backup sunucusunda postgres kullanıcısındayken,
+
+```
 # Enter'a basarak geçin.
 ssh-keygen
+ssh-copy-id -i .ssh/id_rsa <vt_sunucusu>
+ssh <vt_sunucusu>
 ```
-* `/var/lib/pgsql/.ssh/id_rsa.pub` dosyasının içeriğini
-VT sunucusundaki `.ssh/authorized_keys` dosyanına ekleyin.
-
-* test edin.
+backup sunucusunda root kullanıcısındayken
 ```
-# vt sunucusu
-su - postgres
-# otomatik bağlanması gerekir.
-ssh {backupserverip}
-```
-```
-# backup sunucusu
-su - postgres
-# otomatik bağlanması gerekir.
-ssh {backupserverip}
+passwd -d postgres
 ```
 
 ### /etc/pgbackrest.conf ayarları
@@ -176,6 +185,10 @@ Başka path'e restore etmek için "--pg1-path" parametresi belirleyebiliyoruz. A
 sudo -u postgres pgbackrest --stanza=test  --pg1-path=/[baska]/[dizin]  --log-level-console=info restore
 ```
 * Eğer cluster üzerinde tablespaceler varsa bu tablespace pathlerini elle oluşturmak ve adreslemek gerekmektedir.
+```
+--tablespace-map-all=/yeni/dizin/<tablescapedizini>
+https://pgbackrest.org/configuration.html#section-restore/option-tablespace-map
+```
 * Sonrasında restore edilmiş sunucu da postgresql.conf içerisinde sistemin kaynaklarına uygun gerekli ayarlar yapılmalıdır.
 * Zaman belirtilirse __kesinlikle__ verilen zamandan bir önceki **backup set**inin belirtilmesi gerekmektedir. Yoksa restore point olarak **son backup noktası** alır. 
 ```
