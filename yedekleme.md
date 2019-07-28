@@ -38,15 +38,15 @@ pgbackrest --stanza=main --log-level-console=info stanza-create
 ```
 ### oluşturulan stanzadaki configurasyon ve diğer ayarların doğruluğunu kontrol etmek
 ```
-pgbackrest --stanza=test --log-level-console=info check
+pgbackrest --stanza=main --log-level-console=info check
 ```
 ### backup almak (ilk backup lar full olacaktır.)
 ```
-pgbackrest --stanza=test --log-level-console=info backup
+pgbackrest --stanza=main --log-level-console=info backup
 ```
 ### backupların listesini görmek
 ```
-pgbackrest --stanza=test --log-level-console=info info
+pgbackrest --stanza=main --log-level-console=info info
 stanza: test
     status: ok
     wal archive min/max: 00000001000000000000001E / 000000010000000000000029
