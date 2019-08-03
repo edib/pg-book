@@ -10,3 +10,6 @@
   * https://github.com/powa-team/pg_qualstats
   * hypopg
   *
+
+## pg_activity: console izlemek için
+#  pgbench: benchmark

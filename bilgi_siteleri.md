@@ -4,6 +4,7 @@
 * [Resmi El Kitabı](https://www.postgresql.org/docs/manuals/) : indirilebilir pdf yada html.
 * [MVCC](https://devcenter.heroku.com/articles/postgresql-concurrency)
 * [pgcasts](https://www.pgcasts.com/), [Youtube](https://www.youtube.com/channel/UCeqAt2IzOJhih70WRncuktQ)
+* [cpu disk karşılaştırması](https://www.prowesscorp.com/computer-latency-at-a-human-scale/)
 
 
 ## Alıştırmalar
