@@ -14,7 +14,7 @@ log_min_duration_statement
 ```
 shared_buffers # shared, duble buffer
 work_mem # non shared
-wal_buffers # shared
+wal_buffers # non shared
 temp_buffers # non sharerd
 maintenance_work_mem # shared
 ```

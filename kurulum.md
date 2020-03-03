@@ -15,8 +15,8 @@ Yukarıdaki komut bulunulan dizinde Vagrantfile adında bir config dosyası olu�
 ```
 Vagrant.configure("2") do |config|
 	config.vm.box = "centos/7"
-	config.vm.network "private_network", ip: "<sanal_makine_ip"
-	config.vm.hostname = "<sanal_makine_adi"
+	config.vm.network "private_network", ip: "10.11.12.13"
+	config.vm.hostname = "pg13"
 	config.vm.provision "shell", inline: <<-SHELL
 	sed -i s/^SELINUX=.*$/SELINUX=disabled/ /etc/selinux/config
 	systemctl disable firewalld
@@ -38,9 +38,9 @@ ssh vagrant@<sanal_makine_ip>
 ```
 
 ## Postgres Kurulumu
-pg sürüm 11 için ve centos 7 için
+pg sürüm 12 için ve centos 7 için
 https://www.postgresql.org/download/linux/redhat/ adresine gidin
-* Select Version => 11
+* Select Version => 12
 * Select Platform => Redhat .... 7
 * Select Architecture => x86_64
 
@@ -60,13 +60,13 @@ Yoksa aşağıdaki gibi devam edin.
 
 ```
 # cluster ı oluşturuyor,
-/usr/pgsql-11/bin/postgresql-11-setup initdb
+/usr/pgsql-12/bin/postgresql-12-setup initdb
 
 # servisi başlangıçta çalışır şekilde aktif ediyor.
-systemctl enable postgresql-11
+systemctl enable postgresql-12
 
 # servisi başlatıyoruz.
-systemctl start postgresql-11
+systemctl start postgresql-12
 
 # postgresqle giriş yapabiliriz.
 
@@ -74,6 +74,8 @@ su - postgres
 psql
 -- bağlandığımız sürümü görmek için
 SHOW server_version;
+select version;
+
 ```
 'psql' komut satırından çalışan ve sunucu kurulumuyla birlikte gelen gelişmiş bir istemcidir. psql'in parametrelerini görmek için
 ```
@@ -108,7 +110,7 @@ Data: /var/lib/pgsql/${version}/data
 
 Postgresql ayar dosyaları: Önemli diyebileceğimiz 2 farklı ayar dosyası vardır.
 ## [postgresql.conf](postgresql.conf.md) [*](https://postgresqlco.nf/en/doc/param/)
-varsayılan yeri ```/var/lib/pgsql/11/data```. Cluster'ın çalışması gereken tüm ayarları içerir.içinde bir çok parametre vardır. postgresql.conf a alternatif olarak postgresql.auto.conf dosyası da özel ayarların yazılması için kullanılabilir.
+varsayılan yeri ```/var/lib/pgsql/12/data```. Cluster'ın çalışması gereken tüm ayarları içerir. İçinde bir çok parametre vardır. postgresql.conf a alternatif olarak postgresql.auto.conf dosyası da özel ayarların yazılması için kullanılabilir.
 ## [pg_hba.conf](pg_hba.conf.md)
 İstemci erişimi denetimi bu dosyayla sağlanır.
 

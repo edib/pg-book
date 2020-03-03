@@ -68,9 +68,10 @@ postgres=# explain select * from foo;
 `Dead Tuples`: Diskteki kayıt sırası bozulur. Tablo ve index için de geçerli. Bunların birileri tarafından temizlenmesi gerekir.
 [vacuum](https://andreigridnev.com/blog/2016-04-01-analyze-reindex-vacuum-in-postgresql/) : `Autovacuum` ve `vacuum`
 
-`Visibility Map`: [Açıklama](http://www.interdb.jp/pg/pgsql06.html)
+`Visibility Map`: [Açıklama](http://www.interdb.jp/pg/pgsql06.html), 
 
-`free space map` :
+
+`free space map` : Tablolardaki boş alanlar hakkında bilgi depolar. insert ve update sorguları kullanır.
 
 * Her bir filenode yanında (her bir page (8k'lık blok) için)
   - `oid_vm`: Visibility map: dead tuple var mı?, vacuum bakmaz,

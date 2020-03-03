@@ -75,7 +75,7 @@ SELECT name FROM unnest(ARRAY[
      string_to_array('ş Ş ü Ü ö Ö İ ğ Ğ ı ç Ç',' ')
 ]) name ORDER BY name COLLATE "C|en_US|tr_TR";
 ```
-* Cluster oluşturulduğu zaman tekrar encoding değiştirmek mümkün değildir. Tek yöntem mantıksal yedeğini alıp başka bir Cluster oluşturup ona aktarmaktır.
+* PostgreSQL 12'ye kadar cluster oluşturulduğu zaman tekrar encoding değiştirmek mümkün değildir. Tek yöntem mantıksal yedeğini alıp başka bir Cluster oluşturup ona aktarmaktır.
 
 #  postgres yöntemi
 * Cluster oluşturma elle de yapılabilir.
