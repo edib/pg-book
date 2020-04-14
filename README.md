@@ -14,6 +14,7 @@
 
 
  ## Yardımcı
+* [libvirt](libvirt.md)
 * [postgresql.conf](postgresql.conf.md)
 * [pg_hba.conf](pg_hba.conf.md)
 * [Özel Ayarlar](ozel_ayarlar.md)
