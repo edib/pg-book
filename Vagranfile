@@ -1,0 +1,28 @@
+VAGRANTFILE_API_VERSION = "2"
+NUMBER_OF_MEMBERS = 1
+OS_DISTRO = "debian"
+OS_VERSION = "buster64"
+MEMBER_HOSTNAME_PREFIX = "pg"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  (1..NUMBER_OF_MEMBERS).each do |i|
+    config.vm.box = "#{OS_DISTRO}/#{OS_VERSION}"
+    # libvirt settings
+    config.vm.provider "libvirt" do |v|
+      v.memory = 4096
+      v.cpus = 2
+      config.vm.synced_folder ".", "/vagrant", disabled: true
+      v.management_network_name = "default"
+      v.management_network_address = "10.0.0.0/24"
+    end
+    config.vm.define "#{MEMBER_HOSTNAME_PREFIX}#{i}" do |node|
+      node.vm.provision "shell", inline: 'echo "vagrant:vagrant" | chpasswd'
+      node.vm.hostname = "#{MEMBER_HOSTNAME_PREFIX}#{i}"
+      node.vm.provision "shell", inline: <<-SHELL
+          sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config   
+          hostname -I
+          systemctl restart ssh 
+     SHELL
+    end
+  end
+end
