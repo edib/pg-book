@@ -1,13 +1,9 @@
 # PostgreSQL'e Giriş
 
 ## İlişkisel Veritabanı
-Verinin,
-* Tekillik
-* Güvenlik
-* Bütünlük (ilişkisel yapıyı tutar., normalleştirme)
-* Eş zamanlılık
 
-## Transactions
+## Transactions (Atomik İşlemler)
+
 İVTYSler, veritabanı işlemlerinde (transactions) ACID özelliklerine sahiptir.
 * Atomicity (Bölünmezlik): İşlemde bir çok sql cümlesi vardır ve işletilmesi ya hep ya hiç olarak çalışır. İşleme tek birim gibi davranılır.
 * Consistency (Tutarlılık): Bir tutarlı durumdan diğer tutarlı duruma geçer.
@@ -43,9 +39,9 @@ Verinin,
 * Açık Kaynak Lisans
   * PostgreSQL Lisansı (BSD, MIT Benzeri)
 * Lisans Yönetimi PGDG'ye ait
-  * Her zaman beleş
+  * Her zaman beleş, kopyalamaya müsait
 
-# PostgreSQL Tarihi (Wikipedia)
+# (PostgreSQL Tarihi (Wikipedia)) [https://en.wikipedia.org/wiki/PostgreSQL]
 
 # PostgreSQL Mimarisi
   * C
@@ -77,4 +73,5 @@ Verinin,
   * Veri Ambarı
   * İnceleme & Değerlendirme
   * Gerçek zamanlı veri analizi
+  * NoSQL
   * ...
