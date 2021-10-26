@@ -1,5 +1,16 @@
 # virsh kullanımı
 ```
+
+## virtualbox imajlarını libvirte dönüştürmek için 
+
+```
+
+# varsayılan yeri ~/.vagrant.d/boxes/ 
+vagrant mutate <virtulbox_image>.vmdk libvirt
+
+```
+
+
 # sanal makine listesi
 virsh list 
 
