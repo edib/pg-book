@@ -12,14 +12,15 @@ vagrant init centos/7
 ```
 Yukarıdaki komut bulunulan dizinde Vagrantfile adında bir config dosyası oluşturur. Dosyanın içini silip aşağıdaki satırları ekleyin ve hostname ve ip karşısındaki alanları değiştirin. Uygun ip blokları için [buraya](https://www.wikiwand.com/en/Private_network#/Private_IPv4_address_spaces) bakınız.
 
+![Vagrant virtualbox ağ yapısı](https://user-images.githubusercontent.com/4180560/79636826-3e0d9d80-8183-11ea-8ced-eed33d53e184.png)
+
+
 ```
 Vagrant.configure("2") do |config|
-	config.vm.box = "centos/7"
+	config.vm.box = "generic/ubuntu2004"
 	config.vm.network "private_network", ip: "10.11.12.13"
 	config.vm.hostname = "pg13"
 	config.vm.provision "shell", inline: <<-SHELL
-	sed -i s/^SELINUX=.*$/SELINUX=disabled/ /etc/selinux/config
-	systemctl disable firewalld
   sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config    
   reboot
  SHELL
@@ -38,14 +39,8 @@ ssh vagrant@<sanal_makine_ip>
 ```
 
 ## Postgres Kurulumu
-pg sürüm 12 için ve centos 7 için
-https://www.postgresql.org/download/linux/redhat/ adresine gidin
-* Select Version => 12
-* Select Platform => Redhat .... 7
-* Select Architecture => x86_64
-
-Sonrası yapılacaklar otomatik gelecektir.
-Kurulumdaki tüm adımları root yetkisiyle uygulayın.
+pg sürüm 13 için ve ubuntu 20.04 için
+https://www.postgresql.org/download/linux/ubuntu/ adresine gidin
 
 ```
 # install repository package

@@ -19,6 +19,9 @@ sudo apt install qemu qemu-kvm libvirt-bin  bridge-utils  virt-manager
 # libvirt için olanı seçip download edin.
 vagrant box add centos/7 
 
+# mutate alt komutunun kullanılabilmesi için kurmanız gerekmektedir. [Bilgi](https://github.com/sciurus/vagrant-mutate)
+vagrant plugin install vagrant-mutate
+
 # libvirt için olan fazla imaj olmadığından başka işletim sistemleri kullanmak isterseniz virtualbox için olan imaj indirip onu libvirt e dönüştürüyoruz.
 vagrant mutate ubuntu/bionic64 libvirt
 
