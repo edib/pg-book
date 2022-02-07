@@ -1,10 +1,12 @@
 # PostgreSQL'e Giriş
 
+
 ## İlişkisel Veritabanı
 
 ## Transactions (Atomik İşlemler)
 
 İVTYSler, veritabanı işlemlerinde (transactions) ACID özelliklerine sahiptir.
+
 * Atomicity (Bölünmezlik): İşlemde bir çok sql cümlesi vardır ve işletilmesi ya hep ya hiç olarak çalışır. İşleme tek birim gibi davranılır.
 * Consistency (Tutarlılık): Bir tutarlı durumdan diğer tutarlı duruma geçer.
 * Isolation (İzolasyon): Veritabanları, bir vt işlemi devam ederken, işlediği verilerin ne durumlarda başka kullanıcılara görülebilir olduğunu belirlemek için kullanılır. Kontrol edilebilir.
@@ -41,7 +43,9 @@
 * Lisans Yönetimi PGDG'ye ait
   * Her zaman beleş, kopyalamaya müsait
 
-# (PostgreSQL Tarihi (Wikipedia)) [https://en.wikipedia.org/wiki/PostgreSQL]
+# PostgreSQL Tarihi 
+
+- [Wikipedia](https://en.wikipedia.org/wiki/PostgreSQL)
 
 # PostgreSQL Mimarisi
   * C
@@ -58,14 +62,16 @@
   * Sıkıştırma
   * Transactional DDL
   * Loglama, Debug
+  * [Resmi](https://www.postgresql.org/docs/current/intro-whatis.html)
 
 # Güvenlik
   * Doğuştan güvenli
   * İşletim sistemi güvenlik özelliklerini kullanabilir.
-    * Şifreleme
-    * Selinux
-    * Kurumsal kullanıcı yönetim katmanlarına entegre
-    * Bug fixlere hızlı müdahale
+  * Şifreleme
+  * Selinux
+  * Kurumsal kullanıcı yönetim katmanlarına entegre
+  * Bug fixlere hızlı müdahale
+  * Satır, Sütun temelli yetkilendirme
 
 # Kullanım Alanları
   * OLTP (Online Transaction Processing)
@@ -74,4 +80,11 @@
   * İnceleme & Değerlendirme
   * Gerçek zamanlı veri analizi
   * NoSQL
-  * ...
+  * Gömülü
+
+# Hata Bildirme 
+  * Sorunu tanımlama
+    * Nerede kartışaltın?
+  * Ne raporlanacak
+    * Yeterli detay olmak zorunda
+  * [Nereye raporlanacak](https://www.postgresql.org/docs/current/bug-reporting.html#id-1.3.8.7)

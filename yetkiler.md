@@ -133,7 +133,3 @@ ALTER ROLE {bir_rol} SET search_path TO {bir_sema};
 alter schema {bir_sema} owner to {bir_rol};
 
 ```
-
-
-* Bir sonraki:
-[Foreign Data Wrapper](fdw.md)

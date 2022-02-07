@@ -1,51 +1,60 @@
 ## initdb özel ayarlar
 
-### Sadece cluster yolunu değiştir
+Pakette otomatik küme oluşturulmasını kapatın. [1](https://askubuntu.com/a/663673/23126)
+
+## pg_createcluster
+
+
+### Redhat Dağıtımlarında
 * eğer farklı dizin seçilirse paket yöneticisisinin systemd dosyasından cluster data dosyasının değiştirilmesi gerekir.
 
-`/usr/lib/systemd/system/postgresql-11.service`
+`/usr/lib/systemd/system/postgresql-14.service`
 
 * ikinci cluster'ı 1. den üretmek için
 
 ```
-cp /usr/lib/systemd/system/postgresql-11.service /usr/lib/systemd/system/postgresql-11-2.service
+cp /usr/lib/systemd/system/postgresql-14.service /usr/lib/systemd/system/postgresql-14-5433.service
 
 ```
 
 * Yerini hatırlamazsak  
 
 ```
-vi `rpm -ql postgresql11-server | grep systemd`
+vi `rpm -ql postgresql14-server | grep systemd`
 ```
 Bu dosyanın içerisinde aşağıdaki satırı değiştiriyoruz.
+
 ```
 # önceki
-Environment=PGDATA=/var/lib/pgsql/11/data/
+Environment=PGDATA=/var/lib/pgsql/14/data/
 
 # sonraki
-Environment=PGDATA=/var/lib/pgsql/11/veri/
+Environment=PGDATA=/var/lib/pgsql/14/veri/
 ```
 
 * servisi başlangıçta çalışır şekilde aktif ediyor.
 
 ```
-systemctl enable postgresql-11
+systemctl enable postgresql-14
 
-systemctl edit postgresql-11
+systemctl edit postgresql-14
 
 # bunu değiştiriyoruz.
-Environment=PGDATA=/var/lib/pgsql/11/veri/
+Environment=PGDATA=/var/lib/pgsql/14/veri/
 
 systemctl daemon-reload
 
-systemctl cat postgresql-11
+systemctl cat postgresql-14
 # en sonda
 
-# /etc/systemd/system/postgresql-11.service.d/override.conf
-Environment=PGDATA=/var/lib/pgsql/11/veri/
+systemctl edit postgresql-14
+# /etc/systemd/system/postgresql-14.service.d/override.conf
+Environment=PGDATA=/var/lib/pgsql/14/veri/
+
+systemctl daemon-reload
 
 # servisi başlatıyoruz.
-systemctl start postgresql-11
+systemctl start postgresql-14
 
 ```
 
@@ -57,11 +66,15 @@ systemctl start postgresql-11
 
 ```
 su - postgres
-/usr/pgsql-11/bin/initdb --data-checksums --encoding='UTF-8' --lc-collate='tr_TR.UTF-8' --lc-ctype='tr_TR.UTF-8' --pgdata='/var/lib/pgsql/11/veri/'
+/usr/pgsql-14/bin/initdb --data-checksums --encoding='UTF-8' --lc-collate='tr_TR.UTF-8' --lc-ctype='tr_TR.UTF-8' --pgdata='/var/lib/pgsql/14/veri/'
 
 # 2. cluster ise port değiştiriyoruz.
+# posgresql.auto.conf içerisinde
+
 ```
-[Diğer seçenekler için](https://www.postgresql.org/docs/11/app-initdb.html)
+[Servisi başlatmak](https://www.postgresql.org/docs/14/server-start.html)
+
+[Diğer seçenekler için](https://www.postgresql.org/docs/14/app-initdb.html)
 
 
 * encoding: karakterlerin bytelara dönüşüm algoritması (latin1'de farklı, utf-8'de farklı )
@@ -82,11 +95,11 @@ SELECT name FROM unnest(ARRAY[
 
 ```
 # seçenek 1
-sudo -u postgres /usr/pgsql-11/bin/initdb -D $dizin -k
+sudo -u postgres /usr/pgsql-14/bin/initdb -D $dizin -k
 
 # seçenek 2
-sudo -u postgres /usr/pgsql-11/bin/pg_ctl init -D $dizin -o "-k"
+sudo -u postgres /usr/pgsql-14/bin/pg_ctl init -D $dizin -o "-k"
 
 ## servisi başlat.
-sudo -u postgers /usr/pgsql-11/bin/pg_ctl -D $dizin start
+sudo -u postgers /usr/pgsql-14/bin/pg_ctl -D $dizin start
 ```
