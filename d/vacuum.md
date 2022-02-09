@@ -10,8 +10,13 @@
 * Vacuum işlemi disk üzerinde herhangi bir boş alan yaratmaz. Sadece dead tuple’ların üzerine yazılabilir yapar. [*](https://www.interdb.jp/pg/img/fig-6-08.png)
 
 ```
-testdb=# DELETE FROM tbl WHERE id % 200 != 0;
-testdb=# VACUUM tbl;
+create table tbl (data int);
+-- tabloya bir sürü blok verisi girişi 
+insert into tbl (data) SELECT * from generate_series(1,1000);
+DELETE FROM tbl WHERE id % 200 != 0;
+VACUUM tbl;
+
+
 
 ```
 

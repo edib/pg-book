@@ -2,12 +2,12 @@
  
 * PostgreSQL kurulduğunda güvenlik ayarları olarak sadece localhost'u dinlemektedir.
 * PostgreSQL'in dinlediği IP listesi **postgresql.conf** dosyası içinde bulunur. Bu alan ön tanımlı olarak localhost olarak belirlenmiştir.
-* Bu dosyanın değiştirilmesi işleminden sonra Postgresql servislerinin kapatılıp açılması gerekir.
-  
-  ```
-  systemctl restart postgresql
+* Bu dosyanın değiştirilmesi işleminden sonra Postgresql servisinin yeniden başlatılması gerekir.
 
-  ```
+```
+systemctl restart postgresql
+
+```
 
 * Postgresql'de erişim hakları **pg_hba.conf** dosyasında tanımlanır.
 
@@ -112,7 +112,7 @@ create user biruser;
 
 create role birrole;
 
-\h create user 
+\h create user
 
 drop role/user biruser/birrole;
 
@@ -189,6 +189,7 @@ values (1,1),(2,2);
 
 # rates tablosunda description alanı için 
 grant select (a) on t1 to dbuser;
+grant update (a) on t1 to dbuser;
 
 ```
 ### row level security

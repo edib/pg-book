@@ -29,7 +29,6 @@ postgres  2605  2567  0 09:51 ?        00:00:00 postgres: logical replication la
 * `stats collector`: sunucu etkinliği hakkındaki bilgilerin toplanması ve raporlanması.
 * `logical replication launcher`: logical replication işlemini yürütür. 
 * `archiver`: WAL dosyası dolunca bu verileri segment dosyası yeniden kullanım için geri dönüştürülmeden önce bir yere kaydeder.
-* 
 
 ## Bellek Mimarisi
 
@@ -41,7 +40,7 @@ postgres  2605  2567  0 09:51 ?        00:00:00 postgres: logical replication la
 ### Yerel bellek alanı
 
 `work_mem`: Sayfaları, ORDER BY ve DISTINCT işlemlerine göre sıralamak ve merge-join ve hash-join işlemleriyle tabloları birleştirmek için kullanır.
-`maintenance_work_mem`: VACUUM, REINDEX) işlemlerinde kullanılır. 
+`maintenance_work_mem`: VACUUM, REINDEX işlemlerinde kullanılır. 
 `temp_buffers`: temp tablo işlemlerinde kullanır.
 
 ### Paylaşılan bellek alanı
@@ -58,7 +57,7 @@ postgres  2605  2567  0 09:51 ?        00:00:00 postgres: logical replication la
 
 
  * **clock sweep**: page replacement algorithms. Dolan buffer'ı temizlemek için 
-
+* **LRU**: Least Recently Used
 **checkpointer** ve **background writer** temizleme işini yapar. 
 
 

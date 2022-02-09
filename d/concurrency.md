@@ -20,7 +20,7 @@
 * Oracle yöntemi: `rollback segment`: eski veri bu alana atılıp yenisi eskisinin üstüne yazılır. (mssql ve mysqlde de böyle)
 * Bir satırın birden çok versiyonu saklanır. Bir gözlemci tek zamanda sadece bir sürümünü görebilir. Daha sonraki kayıt sürümleri daha güncel veriye sahiptir. 
 * Her veritabanı oturumu için işlem izolasyonu sağlanarak, eşzamanlı işlemlerin aynı veri satırlarında gerçekleştirdiği güncellemelerin ürettiği tutarsız verilerin görüntülenmesi önlenmiş olur.
-* * `visibility check` kurallarına bakarak uygun sürümü o<kSur.
+* * `visibility check` kurallarına bakarak uygun sürümü okur.
 * PostgreSQL, DML için SSI (örneğin, SELECT, UPDATE, INSERT, DELETE) ve DDL için 2PL (Veri Tanımlama Dili, ör., CREATE TABLE vb.) kullanır.
 
 
@@ -36,9 +36,9 @@
 - `Dirty Read`: (read uncommitted), sonuçlanmamış diğer işlem içindeki değişen veriyi okumak.
 - `Non-Repeatable Reads`: Bir işlem daha önce okuduğu verileri yeniden okur ve verilerin başka bir işlem tarafından değiştirildiğini tespit eder (ilk okunmadan bu yana commit edilmiş).
 - `Phantom Reads`: Bir vt işlemi, bir sorgu çalıştırır bir sonuç görür ama sonradan değiştiğini görür.
-- 
 
-* Sequencete sayı artırınca, işlem iptal edilse bile geri alınmaz. 
+
+* Sequence'te sayı artırınca, işlem iptal edilse bile geri alınmaz. 
 
 ### Explicit Locking
 
@@ -167,14 +167,10 @@ postgres=# SELECT lp as tuple, t_xmin, t_xmax, t_field3 as t_cid, t_ctid
 
 * **Fill factor** : fillfactor, bir tablo (ve bir dizin için) için tanımlanabilen bir depolama parametresidir. PostgresSQL, yalnızca sayfa doluluk faktörü yüzdesinden daha azsa sayfaya yeni bir satır ekler. Kalan alan, güncellemeler sonucunda oluşturulan yeni demetler için ayrılmıştır. Tablolar için varsayılan değer 100'dür, yani hiç yer ayrılmamıştır (ve dizinler için varsayılan değer 90'dır).
 
-* **HOT updates**:
-
-
-
-Kaynaklar
-https://pgdash.io/blog/postgres-transactions.html - Videolu anlatım
-https://qr.ae/TWnqjY
-http://shiroyasha.io/transaction-isolation-levels-in-postgresql.html
-https://tapoueh.org/blog/2018/07/postgresql-concurrency-isolation-and-locking/
-https://www.cybertec-postgresql.com/en/transactions-in-postgresql-read-committed-vs-repeatable-read/
-https://postgrespro.com/blog/pgsql/5967910
+### Kaynaklar
+* https://pgdash.io/blog/postgres-transactions.html - Videolu anlatım
+* https://qr.ae/TWnqjY
+* http://shiroyasha.io/transaction-isolation-levels-in-postgresql.html
+* https://tapoueh.org/blog/2018/07/postgresql-concurrency-isolation-and-locking/
+* https://www.cybertec-postgresql.com/en/transactions-in-postgresql-read-committed-vs-repeatable-read/
+* https://postgrespro.com/blog/pgsql/5967910

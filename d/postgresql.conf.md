@@ -6,9 +6,24 @@ max_connections
 ```
 ## Logging Parameters
 ```
+log_directory = log
+log_filename = 'postgresql-%a.log'
+log_rotation_age = 1d
+
+# detaylı bak
 log_line_prefix='%t:%r:%u@%d:[%p]: '
-log_statement
-log_min_duration_statement
+
+# none, ddl, mod, all
+log_statement = all
+log_duration = on
+log_min_duration_statement = 1
+log_checkpoints = on
+log_connections = on
+log_disconnections = on
+log_lock_waits = on
+log_temp_files = 1
+log_autovacuum_min_duration = 1
+
 ```
 ## [Memory Parameters](http://www.interdb.jp/pg/pgsql02.html#_2.2.)
 ```

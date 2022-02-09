@@ -1,6 +1,6 @@
 # timescaledb
 
-## mimari 
+## Genel Bakış
 
 ### ts verisi nedir?
 
@@ -29,7 +29,7 @@ Data:
 2017-01-01 01:05:01    68    750    -54    79
 
 ```
-# ts özellikleri
+#### ts özellikleri
 
 * **Zaman merkezli**: Veri kayıtlarının her zaman bir zaman damgası vardır.
 * **Append-only**: Veriler neredeyse sadece INSERT'lerden oluşur.
@@ -38,7 +38,7 @@ Data:
 * **Sıklık** ve **düzenlilik** ikincil öncelikli, milisaniyerlerle de veri toplanabilir, saatlerle de. Düzenli de toplanabilir ve bir olay olduğu anda da. 
 
 
-Nerelerde kullanılabilir? 
+#### Nerelerde kullanılabilir? 
 
 * **Bilgisayar sistemlerini izleme**: VM, sunucu, kapsayıcı ölçümleri (CPU, boş bellek, net/disk IOP'leri), hizmet ve uygulama ölçümleri (istek oranları, istek gecikmesi).
 
@@ -88,7 +88,7 @@ Nerelerde kullanılabilir?
 
 * **çok nodlu yatay ölçeklendirme**: İstemci tek sql nesnesi görürken, arkada yatayda bir çok makinaya ölçeklendirme.
 
-### Hypertables
+## Hypertables
 
 * Birbirine bağlı birçok parçadan oluşsa da, hipertabloya yapılan komutlar, değişiklikleri o hipertabloya ait tüm parçalara otomatik olarak yayar.
 * İki adımlı bir işlemdir; standart bir PostgreSQL tablosu oluşturmanız ve ardından bunu bir TimescaleDB hiper tablosuna dönüştürmeniz gerekir. Çok düğümlü bir kümede dağıtılmış hiper tablo oluşturma yöntemi benzerdir.
@@ -133,6 +133,34 @@ ALTER TABLE TABLE_NAME
 * hypertablelar ek kolonlara göre bölümlenebilirler. (device id vb.) (hash buckets)
 * select sorguları chuckların sınırlarını bilir ve belirlenen chunck dışında arama yapmaz. `time > now() - interval '1 week'`
 
+
+## Hypertables ve Chunks Faydaları
+
+* **In-memory data**: yeni gelenler ve indexleri bellekte durur. pgnin lru bellek temizleme kurallarına tabidir. 
+* **local indexler**: her bölümün indexi datayla birlikte tutulur. bölüme insert gelince index de birlikte güncellenir. 
+* **Easy data retention**: kullanıcılar bir veri saklama politikası oluşturabilir. Eski verileri silmek ek iş çıkarmayacak. Bölüm temelli silme.
+* **Yaşa dayalı sıkıştırma, verileri yeniden sıralama**: geçmiş dataları sıkıştırır ve columnar benzeri hale getirir. asenkron bir şekilde varolan indexe göre sıralar. 
+*  **Instant multi-node elasticity**: yeni sunucuların esnek eklenmesi ve çıkarılması. yeni oluşturulan bölümler yeni sunucuda oluşturulur ve asenkron bir şekilde rebalance edilir. 
+*  **veri kopyalama**: chunklar, dağıtık bir hipertablo üzerinde bir çoğaltma faktörü yapılandırılarak (insert zamanında bir 2PC işleminin parçası olarak gerçekleşir) veya çoğaltma faktörünü artırmak için bir düğümden diğerine eski bir chunk kopyalanarak, işlemsel olarak düğümler arasında ayrı ayrı çoğaltılabilir, örn. , bir düğüm hatasından sonra (**yakında**).
+* **Veri göçü**: chunklar, transactional olarak ayrı ayrı taşınabilir. örneğin, eski verileri daha ucuz depolamaya taşımak.(**yakında**). 
+
+## TimescaleDB'yi Ölçeklendirme
+
+### Tekil node 
+### Streaming replication 
+* Bildiğimiz pg replication
+#### Çok düğümlü TimescaleDB ve dağıtılmış hiper tablolar
+- dağıtılmış hiper tablolar: chunkın altkümesi
+- çok düğümde 2 role var: (yazılım aynı)
+  - **access node**: dağıtık kümenin yapısını, dağıtık olmayan hypertableları ve standart pg tablolalarını tutar. istemciler buradan erişirler.  görevleri data nodelarına dağıtır. 
+  - **data node**: büyük resmi tutmazlar, kendi başlarına tsdb gibi davranırlar. aggregateler burada yapılır. merge için access node'a gönderilir.
+
+## Dağıtılmış hiper tabloları yapılandırma
+
+* En iyi performansı sağlamak için, dağıtılmış bir hiper tabloyu hem zamana hem de alana göre bölümlere ayırmanız gerekir.
+* Verileri yalnızca zamana göre bölümlerseniz, access node bir sonraki chunk'ı depolamak için başka bir data node seçmeden önce bu chunkın doldurulması gerekir, bu nedenle en son aralığa yapılan tüm yazma işlemleri tek bir data node tarafından işlenir, yük dengelemesi yapılamz. 
+* Ek olarak bir alan chunk belirtirseniz, access node, time chunk aralığı için birden çok space chunk da oluşturulacak ve parçaları alan bölümüne dayalı olarak birden çok data nodea arasında dağıtır ve küme boyunca yük dengelemesi yapılmış olacaktır.
+
 #### dağıtılmış hiper tablolar
 * bir araç (device) gelen verinin zamanın dışında alt bölmelere ayrılır ve farklı nodelara dağıtılır.insertler bu sayede paralelleştirilir. (? geliştirilecek)
 * çok nodunuz yoksa dağıtık hipertablo komutu başarısız olur. 
@@ -149,38 +177,12 @@ SELECT create_distributed_hypertable('conditions', 'time', 'location');
 
 ```
 
-## Hypertables ve Chunks Faydaları
-
-* **In-memory data**: yeni gelenler ve indexleri bellekte durur. pgnin lru bellek temizleme kurallarına tabidir. 
-* **local indexler**: her bölümün indexi datayla birlikte tutulur. bölüme insert gelince index de birlikte güncellenir. 
-* **Easy data retention**: kullanıcılar bir veri saklama politikası oluşturabilir. Eski verileri silmek ek iş çıkarmayacak. Bölüm temelli silme.
-* **Yaşa dayalı sıkıştırma, verileri yeniden sıralama**: geçmiş dataları sıkıştırır ve columnar benzeri hale getirir. asenkron bir şekilde varolan indexe göre sıralar. 
-*  **Instant multi-node elasticity**: yeni sunucuların esnek eklenmesi ve çıkarılması. yeni oluşturulan bölümler yeni sunucuda oluşturulur ve asenkron bir şekilde rebalance edilir. 
-*  **veri kopyalama**: chunklar, dağıtık bir hipertablo üzerinde bir çoğaltma faktörü yapılandırılarak (insert zamanında bir 2PC işleminin parçası olarak gerçekleşir) veya çoğaltma faktörünü artırmak için bir düğümden diğerine eski bir chunk kopyalanarak, işlemsel olarak düğümler arasında ayrı ayrı çoğaltılabilir, örn. , bir düğüm hatasından sonra (**yakında**).
-* **Veri göçü**: chunklar, transactional olarak ayrı ayrı taşınabilir. örneğin, eski verileri daha ucuz depolamaya taşımak.
-
-### TimescaleDB'yi Ölçeklendirme
-
-#### Tekil node 
-#### Streaming replication
-#### Çok düğümlü TimescaleDB ve dağıtılmış hiper tablolar
-- dağıtılmış hiper tablolar: chunkın altkümesi
-- çok düğümde 2 role var: (yazılım aynı)
-  - access node: dağıtık kümenin yapısını, dağıtık olmayan hypertableları ve standart pg tablolalarını tutar. istemciler buradan erişirler.  görevleri data nodelarına dağıtır. 
-  - data node: büyük resmi tutmazlar, kendi başlarına tsdb gibi davranırlar. aggregateler burada yapılır. merge için access node'a gönderilir.
-
-#### Dağıtılmış hiper tabloları yapılandırma
-
-* En iyi performansı sağlamak için, dağıtılmış bir hiper tabloyu hem zamana hem de alana göre bölümlere ayırmanız gerekir.
-* Verileri yalnızca zamana göre bölümlerseniz, access node bir sonraki chunk'ı depolamak için başka bir data node seçmeden önce bu chunkın doldurulması gerekir, bu nedenle en son aralığa yapılan tüm yazma işlemleri tek bir data node tarafından işlenir, yük dengelemesi yapılamz. 
-* Ek olarak bir alan chunk belirtirseniz, access node, time chunk aralığı için birden çok space chunk da oluşturulacak ve parçaları alan bölümüne dayalı olarak birden çok data nodea arasında dağıtır ve küme boyunca yük dengelemesi yapılmış olacaktır.
-
 #### Dağıtılmış hiper tabloları ölçeklendirme
 * yeni data node eklenince space partitionlar ona göre düzenlenir. 
 * eskiler değişmez ama yeni eklenen chuncklar yeni nodlara dağıtılır.
   
 
-### Sıkıştırma
+## Sıkıştırma
 
 * TimescaleDB, hiper tablolarda depolanan verileri native olarak sıkıştırma yeteneğini destekler.
 * Zaman serisi verilerini sıkıştırmak, verilerinizin depolama gereksinimini önemli ölçüde azaltabilir ve çoğu durumda, geçmiş, sıkıştırılmış veriler üzerindeki sorguların yanıt verme süresini hızlandırabilir.
@@ -188,7 +190,7 @@ SELECT create_distributed_hypertable('conditions', 'time', 'location');
 * Asenkron bir şekilde, tablolar satır tabanlı bir formdan sütunlu bir forma dönüştürülür. Kullanıcılar standart bir satır tabanlı şema görmeye devam ederler. 
 * Sorgu zamanında sıkıştırılmış veri açılarak sorguya cevap verilir. 
 
-### Sürekli toplamlar
+## Sürekli toplamlar
 
 * Büyük miktarda zaman serisi verisine dokunan toplu sorguların `(min(), max(), avg()...)` hesaplanması uzun zaman alabilir çünkü sistemin her sorgu yürütmesinde büyük miktarda veriyi taraması gerekir. 
 * Bu tür sorguları daha hızlı hale getirmek için, sürekli bir toplama, hesaplanan toplamaları `materialize` yapar ve düşük ek yük ile bunları sürekli güncel tutar.
@@ -241,8 +243,18 @@ ORDER BY bucket;
 
 * `SUM`, `AVG` toplamları paralelleştilir. 
 * `ORDER BY`, `DISTINCT` ve `FILTER` paralelleştirilemez.
+
+### gerçek zamanlı toplulaştırma
+* otomatik açıktır. önceden toplulaştırır. Gerçek pg gibi runtime da yapmaz. Gerçek zamanlı toplama, tüm yeni sürekli toplamalar için varsayılan davranıştır.
 * `timescaledb.materialized_only=true` sürekli güncellemeyi kapatmak için
 * `refresh_continuous_aggregate`: elle güncellemeyi sağlar.
+
+```
+CALL refresh_continuous_aggregate('conditions', '2020-01-01', '2020-02-01');
+# https://docs.timescale.com/api/latest/continuous-aggregates/refresh_continuous_aggregate/#sample-usage
+# https://www.lhsz.xyz/read/TimescaleDB-2.1-en/spilt.31.55581822f2599198.md
+
+```
 
 ### veri saklama
 
