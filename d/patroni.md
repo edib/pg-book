@@ -60,7 +60,8 @@ restapi:
     connect_address: ${NODEIP}:8008
 
 raft:
-  data_dir: .
+  # a dir owner of which is postgres
+  data_dir: /var/lib/postgresql/14/patroni
   self_addr: ${NODEIP}:2222
   partner_addrs:
   - ${NODE2}:2222
