@@ -1,5 +1,6 @@
 # patroni
 
+* [Resmi Dokümantasyon](https://patroni.readthedocs.io/en/latest/index.html)
 
 ## Kurulum (Python Raft ile)
 
