@@ -1,4 +1,7 @@
-# patroni HA
+# patroni
+
+
+## Kurulum (Python Raft ile)
 
 * 3 node
 * pg kur: https://www.postgresql.org/download/linux/ubuntu/
@@ -134,3 +137,12 @@ patronictl -c /etc/patroni/config.yml list
 +----------+------------+---------+---------+----+-----------+
 
 ```
+
+## Varolan Tek Sunucuyu eklemek
+-- todo
+## Varolan Streaming Replikasyonu eklemek
+-- todo
+## Yedekeleme Yapılandırması (Pgbackrest)
+-- todo
+## PgBackrest beslemeli yeni replica eklenmesi
+-- todo
