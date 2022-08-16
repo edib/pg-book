@@ -18,7 +18,7 @@ Yukarıdaki komut bulunulan dizinde Vagrantfile adında bir config dosyası olu�
 
 ```
 Vagrant.configure("2") do |config|
-	config.vm.box = "generic/ubuntu2004"
+	config.vm.box = "generic/ubuntu2204"
 	config.vm.network "private_network", ip: "10.11.12.13"
 	config.vm.hostname = "pg13"
 	config.vm.provision "shell", inline: <<-SHELL
