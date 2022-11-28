@@ -7,8 +7,8 @@
 # [Eşzamanlılık kontrolü](d/concurrency.md)
 # [Vacuum İşlemleri](d/vacuum.md)
 # [Write Ahead Log](d/wal.md)
-# [Yedekleme](d/yedekleme.md)
 # [Streaming Replication](d/replikasyon.md)
+# [Yedekleme](d/yedekleme.md)
 # [İzleme](d/izleme.md)
 # [Explain](https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_explain.html)
 
