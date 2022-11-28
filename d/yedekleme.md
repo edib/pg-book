@@ -318,3 +318,5 @@ pgbackrest --stanza=data --delta restore \
 
 * [pgbackrest-check](https://github.com/edib/pgscripts/blob/master/pgbackrest_check.php)
 [referans](https://pgbackrest.org/configuration.html#section-restore)
+
+## [barman](https://github.com/edib/pg-dba-egitim/blob/master/d/barman.md)
