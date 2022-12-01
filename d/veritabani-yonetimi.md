@@ -46,6 +46,7 @@ ALTER ROLE birrole SET search_path TO birsema,baskasema;
 
 ### partitioning
 * https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/05-veritabani-yonetimi/partitioning/
+* https://hevodata.com/learn/postgresql-partitions/
 
 ### fdw
 #### [postgres_fdw](d/fdw.md)
