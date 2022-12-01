@@ -39,13 +39,13 @@ ALTER ROLE birrole SET search_path TO birsema,baskasema;
 
 ```
 
-* [Önemli Komutlar](https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_postgres_veritaban%C4%B1_islemleri.html)
+* [Önemli Komutlar](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/05-veritabani-yonetimi/postgres_veritaban%C4%B1_islemleri/)
 
 ### tablespaces
-* https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_tablespace.html
+* https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/05-veritabani-yonetimi/tablespace/
 
 ### partitioning
-* https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_partitioning.html
+* https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/05-veritabani-yonetimi/partitioning/
 
 ### fdw
 #### [postgres_fdw](d/fdw.md)
