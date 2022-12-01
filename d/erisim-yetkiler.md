@@ -207,4 +207,4 @@ ALTER TABLE birtablo ENABLE ROW LEVEL SECURITY;
 
 [Diğer security yöntemleri](https://www.enterprisedb.com/postgres-tutorials/how-implement-column-and-row-level-security-postgresql)
 
-[Diğer işlemler](https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_kullanici_yonetimi.html)
+[Diğer Kullanıcı Yönetimi İşlemleri](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/05-veritabani-yonetimi/kullanici_yonetimi/)
