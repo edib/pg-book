@@ -38,7 +38,7 @@ REVOKE ALL ON SCHEMA public FROM benimkullanici;
 ALTER ROLE birrole SET search_path TO birsema,baskasema;
 
 ```
-
+* [Yerelleştirme terminolojisi](https://www.postgresql.org/docs/current/locale.html)
 * [Önemli Komutlar](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/05-veritabani-yonetimi/postgres_veritaban%C4%B1_islemleri/)
 
 ### tablespaces
