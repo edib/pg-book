@@ -71,7 +71,7 @@ varsayılan yeri ```/var/lib/postgresql/${version}/${cluster_adı}```. Cluster'�
 * her bir objede set edilen/edilebilen. (fillfactor)
 * geliştirici parametreleri
 * compile-time parametreleri
-* [Ayarlara Genel Bakış](d/ozel_ayarlar.md)
+* [Ayarlara Genel Bakış](ozel_ayarlar.md)
 
 
 ## postgresql servisinin yönetimi
