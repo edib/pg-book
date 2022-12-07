@@ -61,9 +61,9 @@ Data: /var/lib/pgsql/${version}/data
 ### Ayarlar nerede yapılır?
 
 Postgresql ayar dosyaları: En Önemli 2 ayar dosyası var.
-*  [postgresql.conf](d/postgresql.conf.md) [*](https://postgresqlco.nf/en/doc/param/)
-varsayılan yeri ```/var/lib/pgsql/12/data```. Cluster'ın çalışması gereken tüm ayarları içerir. İçinde bir çok parametre vardır. postgresql.conf a alternatif olarak postgresql.auto.conf dosyası da özel ayarların yazılması için kullanılabilir.
-* [pg_hba.conf](d/pg_hba.conf.md) İstemci erişimi denetimi bu dosyayla sağlanır.
+*  [postgresql.conf](postgresql.conf.md) [*](https://postgresqlco.nf/en/doc/param/)
+varsayılan yeri ```/var/lib/postgresql/${version}/${cluster_adı}```. Cluster'ın çalışması gereken tüm ayarları içerir. İçinde bir çok parametre vardır. postgresql.conf a alternatif olarak postgresql.auto.conf dosyası da özel ayarların yazılması için kullanılabilir.
+* [pg_hba.conf](pg_hba.conf.md) İstemci erişimi denetimi bu dosyayla sağlanır.
 
 * ------ diğer ayarlar
 * replication: eskiden recovery.conf vardı. 12'de kalktı. postgresql.conf içine yedirildi. 
@@ -77,7 +77,7 @@ varsayılan yeri ```/var/lib/pgsql/12/data```. Cluster'ın çalışması gereken
 ## postgresql servisinin yönetimi
 ```
 # postgres yöntemi
-pg_ctl -D /var/lib/pgsql/11/data/ ${action}
+pg_ctl -D /var/lib/postgresql/${version}/${küme_adı}/ ${action}
 
 # systemd yöntemi
 systemctl ${action} postgresql.service
