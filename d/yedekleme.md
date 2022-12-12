@@ -89,6 +89,37 @@ pg_restore -d {vt_adi} dump.dosyasi.dump
 
 ## pgbackrest
 
+* Parallel Backup & Restore 
+* Local or Remote Operation 
+* Multiple Repositories
+* Full, Incremental, & Differential Backups 
+* Backup Rotation & Archive Expiration
+* Backup Integrity
+  * Checksums
+  * Fast restore
+* Page Checksums 
+* Backup Resume 
+* Streaming Compression & Checksums
+* Delta Restore 
+* Parallel, Asynchronous WAL Push & Get
+* Tablespace & Link Support 
+* S3 compatible
+* Encryption
+
+### Yedekleme Yapısı
+
+![image](/images/pgb-backup.png) 
+
+* Full
+* Differential
+* Incremental
+
+### Restore Yapısı
+* Backup ve WAL Dosyaları gereklidir. 
+
+### WAL
+
+
 * node1: db primary
 * node2: pgbackrest repo
 
