@@ -137,7 +137,7 @@ apt-get update && apt-get install pgbackrest -y
 * archive ayarları: /etc/postgresql/14/main/postgresql.conf ve postgresql servisini restart ediyoruz. 
 
 ```
-archive_command = 'pgbackrest --stanza=egitim archive-push %p'
+archive_command = 'pgbackrest --stanza=main archive-push %p'
 archive_mode = on
 listen_addresses = '*'
 
@@ -199,7 +199,7 @@ repo1-path=/var/lib/pgbackrest
 retention-full=2
 repo1-host= <repo-ip>
 
-[egitim]
+[main]
 pg1-path=/var/lib/postgresql/14/main/
 pg1-port=5432
 pg1-host-user=postgres
@@ -216,7 +216,7 @@ backup-user=postgres
 start-fast=y
 log-level-file=detail
 
-[egitim]
+[main]
 pg1-path=/var/lib/postgresql/14/main/
 pg1-host=<primary-ip>
 pg1-port=5432
@@ -225,22 +225,22 @@ pg1-port=5432
 * node2 den bir depo oluşturuyoruz.
 
 ```
-pgbackrest --stanza=egitim --log-level-console=info stanza-create
+pgbackrest --stanza=main --log-level-console=info stanza-create
 
 ```
 * herşey yolunda mı kontrol ediyoruz. Başarılı bir mesaj dönecektir. 
 
 ```
-pgbackrest --stanza=egitim  --log-level-console=info check
+pgbackrest --stanza=main  --log-level-console=info check
 ```
 
 ### backup
 
 ```
 # backup almak (ilk backup lar full olacaktır.)
-pgbackrest --stanza=egitim --log-level-console=info backup
+pgbackrest --stanza=main --log-level-console=info backup
 # backupların listesini görmek
-pgbackrest --stanza=test --log-level-console=info info
+pgbackrest --stanza=main --log-level-console=info info
 
 ```
 
@@ -259,16 +259,6 @@ process-max=8
 process-max=3
 
 ```
-
-* Backup, backup/repo sunucusundan alınır. 3 türlüdür. 
-  * full
-  * diff
-
-![diff](images/diff.png)  
-
-  * incremental
-
-![incremental](images/incremental.png)
 
 ### restore
 
