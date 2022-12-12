@@ -16,7 +16,11 @@
 ### Akış 
 * **wal buffer**: memory
 * **wal segment**: kalıcı disk
-* **LSN**: unique _log sequence number_  kullanılıyor. (izlemek için bu terim çok kullanılıyor.)
+* **LSN**: unique _log sequence number_  kullanılıyor. (izlemek için bu terim çok kullanılıyor.) WAL'deki bir konumu gösteren bir işaretçidir. PG içinde işaretsiz 64 bit değer olarak temsil edilir; PG'nin dışında, eğik çizgi (/) ile ayrılmış 2 onaltılık sayı olarak gösterilir; 
+  * Birinci sayı, bir WAL dosyasındaki segment'in idsini gösterir.
+  * ikinci sayı, o segment  dosyası içindeki ofsettir. 
+  * LSN ne kadar büyükse VT'de o kadar büyüktür.
+  * page file içindeki pd_lsn değeri, bu pagei en son hangi WAL'ın değiştirdiğini söyler.  
 * **redo point**: recover ederken _checkpoint_ olmuş ve diske buraya yazılmış buradan itibaren kurtarılacak.
 * recovery checkpoint ile sıkı bir şekilde ilgilidir. 
 
@@ -106,6 +110,7 @@ wal_sender_timeout = 60s
 ## Checkpoint
 
 * Checkpoint dirty durumdaki bellekte duran verinin topluca diske yazılma işlemidir.
+  * her checkpoint yapılırken pg_control'e checkpoint pozisyonu yazılır. pg geri kalkarken buradaki bilgiye göre recover eder. 
 
 Bu olay sırasında DB aşağıdaki 3 olayı gerçekleştirir.
 
@@ -163,5 +168,3 @@ archive_command = 'cp %p /home/postgres/archives/%f'
 
 ```
 * Bir yedekleme yazılımıyla yönetin. 
-
-
