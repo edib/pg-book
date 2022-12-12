@@ -51,6 +51,12 @@ primary_conninfo = 'user=<replicationuser> host=<ipofmaster> port=5432 sslmode=p
 primary_slot_name = '<a replication slot name>'
 ```
 
+### başlat
+
+```
+systemctl start postgreql
+```
+
 replica sunucusu tüm transaction logları işleyip açılınca aşağıdaki sorgu t olarak dönecektir. primary sunucusunda f olarak dönecektir.
 ```
 select pg_is_in_recovery();
