@@ -309,7 +309,8 @@ pgbackrest --stanza=mystsanza --type time "--target=YYYY-mm-dd h:d:s" \
 
 ```
 
-Configleri komut satırında elle tanımlamak için
+* Configleri komut satırında elle tanımlamak
+* sadece bir db dönmek
 ```
 pgbackrest --stanza=main --db-include=[bir_db] --repo1-path=/[pgbackrest]/[dizini] --pg1-path=/[geriyukleme]/[dizini] --log-level-console=info restore
 ```
