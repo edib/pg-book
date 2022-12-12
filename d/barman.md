@@ -1,4 +1,6 @@
 # barman 
+* RPO: zero data loss, sync backup
+* Örnekler: https://docs.pgbarman.org/release/3.2.0/
 
 ## backup sunucusuna kurulum
 ## kullanıcılar
