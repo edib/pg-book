@@ -134,7 +134,7 @@ select pg_drop_replication_slot('<slotname>');
 
 Özel-1: Eğer [senkron replikasyon](https://www.postgresql.org/docs/current/runtime-config-replication.html) yapmak istiyorsak
 
-1- replikada recovery.conf içerisindeki aşağıdaki satıra ```application_name``` tanımı ekleyeceğiz.
+1- replikada postgresql.auto.conf içerisindeki aşağıdaki satıra ```application_name``` tanımı ekleyeceğiz.
 ```
 primary_conninfo = 'user=<username> host=<primary_ip> application_name=<replika_adi>'
 ```
@@ -144,7 +144,7 @@ synchronous_standby_names = '<replika_adi>'
 ```
 
 ```
-psql -c "select application_name,client_addr,state,sent_location,write_location,flush_location,replay_location
+psql -c "select application_name,client_addr,state,sent_lsn,write_lsn,flush_lsn,replay_lsn
  from pg_catalog.pg_stat_replication order by 1"
 psql  -c "select slot_name,active,xmin,restart_lsn from pg_catalog.pg_replication_slots"
 psql -c "SELECT * from pg_stat_archiver;"
