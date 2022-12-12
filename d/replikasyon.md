@@ -107,9 +107,15 @@ sync_state       | async
 Replica sunucularının byte olarak ne kadar geride olduklarıyla ilgili bilgi almak için (master sunucusunda):
 ```
 SELECT client_hostname, client_addr,
-pg_wal_location_diff(pg_stat_replication.sent_location,
-pg_stat_replication.replay_location) AS byte_lag
+pg_wal_lsn_diff(pg_stat_replication.sent_lsn,
+pg_stat_replication.replay_lsn) AS byte_lag
 FROM pg_stat_replication;
+
+-[ RECORD 1 ]---+-----------
+client_hostname | 
+client_addr     | <ip_address>
+byte_lag        | 0
+
 ```
 Slotu kaldırmak için
 ```
