@@ -72,37 +72,47 @@ primary sunucuda aşağıki sorgular çalıştırılarak replikasyonun çalış�
 ```
 select * from pg_replication_slots ;
 -[ RECORD 1 ]-------+----------
-slot_name           | r1
-plugin              |
+slot_name           | node2
+plugin              | 
 slot_type           | physical
-datoid              |
-database            |
+datoid              | 
+database            | 
+temporary           | f
 active              | t
-active_pid          | 28152
-xmin                |
-catalog_xmin        |
-restart_lsn         | 0/3006D00
-confirmed_flush_lsn |
+active_pid          | 7922
+xmin                | 
+catalog_xmin        | 
+restart_lsn         | 0/3437890
+confirmed_flush_lsn | 
+wal_status          | reserved
+safe_wal_size       | 
+two_phase           | f
+
 
 
 select * from pg_stat_replication ;
 -[ RECORD 1 ]----+------------------------------
-pid              | 28152
-usesysid         | 16384
+pid              | 7922
+usesysid         | 16388
 usename          | repuser
-application_name | walreceiver
+application_name | 15/main
 client_addr      | <ip_address>
-client_hostname  |
-client_port      | 54362
-backend_start    | 2017-02-14 23:43:44.850637+03
-backend_xmin     |
+client_hostname  | 
+client_port      | 52656
+backend_start    | 2022-12-12 18:32:52.106755+00
+backend_xmin     | 
 state            | streaming
-sent_location    | 0/3006D00
-write_location   | 0/3006D00
-flush_location   | 0/3006D00
-replay_location  | 0/3006D00
+sent_lsn         | 0/3437890
+write_lsn        | 0/3437890
+flush_lsn        | 0/3437890
+replay_lsn       | 0/3437890
+write_lag        | 
+flush_lag        | 
+replay_lag       | 
 sync_priority    | 0
 sync_state       | async
+reply_time       | 2022-12-12 18:44:59.775634+00
+
 ```
 Replica sunucularının byte olarak ne kadar geride olduklarıyla ilgili bilgi almak için (master sunucusunda):
 ```
