@@ -268,7 +268,11 @@ process-max=3
 * kurallar:
 * dbnin kapalı olması ya da dizinin boş olması gerek. yoksa hata verir. 
 * `--delta` özelliği vardır. 
+* type bilgisi
+  * --type=time  --type=lsn : hangisi kullanılırsa ona göre time yada lsn verilmesi gerekir. 
 
+#### delta
+* varolan kümenin üzerine yazar. 
 ```
 pgbackrest --stanza=main --delta \
 --type=time "--target=2019-07-28 17:30:00.000000+00" \
@@ -294,6 +298,7 @@ sudo -u postgres pgbackrest --stanza=main  --pg1-path=/[baska]/[dizin]  --log-le
 --tablespace-map-all=/yeni/dizin/<tablescapedizini>
 https://pgbackrest.org/configuration.html#section-restore/option-tablespace-map
 ```
+
 * Sonrasında restore edilmiş sunucu da postgresql.conf içerisinde sistemin kaynaklarına uygun gerekli ayarlar yapılmalıdır.
 * Zaman belirtilirse __kesinlikle__ verilen zamandan bir önceki **backup set**inin belirtilmesi gerekmektedir. Yoksa restore point olarak **son backup noktası** alır. 
 
