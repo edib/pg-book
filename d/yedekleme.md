@@ -270,7 +270,7 @@ process-max=3
 * `--delta` özelliği vardır. 
 
 ```
-pgbackrest --stanza=egitim --delta \
+pgbackrest --stanza=main --delta \
 --type=time "--target=2019-07-28 17:30:00.000000+00" \
 --target-action=promote restore
 ```  
@@ -279,13 +279,13 @@ pgbackrest --stanza=egitim --delta \
 * Varsayılan ayarlarda restore edildiği zaman streaming replikasyon gibi son ana restore eder.
 
 ```
-pgbackrest --stanza=egitim --log-level-console=info restore
+pgbackrest --stanza=main --log-level-console=info restore
 
 ```
 Başka path'e restore etmek için "--pg1-path" parametresi belirleyebiliyoruz. Aşağıdaki komutu <baska_dizin> dizinini 700 yetkisiyle oluşturduktan sonra çalıştırırsak bu dizine son backup'ı restore eder.
 
 ```
-sudo -u postgres pgbackrest --stanza=test  --pg1-path=/[baska]/[dizin]  --log-level-console=info restore
+sudo -u postgres pgbackrest --stanza=main  --pg1-path=/[baska]/[dizin]  --log-level-console=info restore
 ```
 
 * Eğer cluster üzerinde tablespaceler varsa bu tablespace pathlerini elle oluşturmak ve adreslemek gerekmektedir.
@@ -306,12 +306,12 @@ pgbackrest --stanza=mystsanza --type time "--target=YYYY-mm-dd h:d:s" \
 
 Configleri komut satırında elle tanımlamak için
 ```
-pgbackrest --stanza=mystsanza --db-include=[bir_db] --repo1-path=/[pgbackrest]/[dizini] --pg1-path=/[geriyukleme]/[dizini] --log-level-console=info restore
+pgbackrest --stanza=main --db-include=[bir_db] --repo1-path=/[pgbackrest]/[dizini] --pg1-path=/[geriyukleme]/[dizini] --log-level-console=info restore
 ```
 Eskisinin üstüne sadece değişen yerleri aktarsın istersek, delta parametresi local restorelar içinde kullanılabilir. Master postgres servisinin kapalı olması gerekir.
 
 ```
-pgbackrest --stanza=test --delta --log-level-console=info restore
+pgbackrest --stanza=main --delta --log-level-console=info restore
 ```
 * Eğer restore'u backup servera dönmek istiyorsak:
   
@@ -329,7 +329,7 @@ pgbackrest --log-level-console=info --stanza=test (archive-push|archive-get) /$P
 * Uzak Makineye Restore Yapma
 
 ```
-pgbackrest --stanza=data --delta restore \
+pgbackrest --stanza=main --delta restore \
                             --recovery-option=recovery_target=immediate
 
 ```
