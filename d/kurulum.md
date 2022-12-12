@@ -1,10 +1,22 @@
 # Kurulum
 
 Eğer kişisel bilgisayarımızda bir sanal makina oluşturarak postgres kurulumu yapmak istiyorsak en kısa yol vagrant iledir. [Vagrant kurulumu](vagrant.md) 
+## Gereksinimler
+
+```
+gpgyi okumak için
+apt install -y gnupg2
+
+# ekrana basan dil mesajı için
+
+locale-gen tr_TR.UTF-8
+localedef -i tr_TR -f UTF-8 tr_TR.UTF-8
+
+```
 
 ## Postgres Kurulumu
-pg sürüm 14 için ve ubuntu 20.04 için
-https://www.postgresql.org/download/linux/ubuntu/ adresine gidin
+pg sürüm 15 için ve debian 11 için
+https://www.postgresql.org/download/linux/debian/ adresine gidin
 
 Eğer cluster'ı başlatırken özel ayarlar yapmak istiyorsanız buraya başvurun.
 [Özel initdb ayarları](docs/ozel_ayarlar.md)
