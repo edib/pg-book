@@ -344,6 +344,11 @@ pgbackrest --stanza=main --delta restore \
 * [php restore script]
 
 * [pgbackrest-check](https://github.com/edib/pgscripts/blob/master/pgbackrest_check.php)
-[referans](https://pgbackrest.org/configuration.html#section-restore)
+* [referans](https://pgbackrest.org/configuration.html#section-restore)
+
+### Diğer Konular
+* https://pgbackrest.org/user-guide.html#replication
+* https://pgbackrest.org/user-guide.html#async-archiving
+* https://pgbackrest.org/user-guide.html#standby-backup
 
 ## [barman](https://github.com/edib/pg-dba-egitim/blob/master/d/barman.md)
