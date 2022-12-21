@@ -11,6 +11,10 @@ kvm-ok
 
 # kurulum
 sudo apt install qemu qemu-kvm libvirt-bin  bridge-utils  virt-manager
+
+# vagrant libvirt destek kurulumu
+# son sürüm buradan bulunur. https://github.com/vagrant-libvirt/vagrant-libvirt/
+gem install vagrant-libvirt --version "0.11.3.pre.7" --source "https://rubygems.pkg.github.com/vagrant-libvirt"
 ```
 
 ### vagrant box indirme
