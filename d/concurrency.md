@@ -165,7 +165,16 @@ postgres=# SELECT lp as tuple, t_xmin, t_xmax, t_field3 as t_cid, t_ctid
 * Eski txidleri dondurma: vacuum (autovacum) çalışır.
 * FSM, VM ve istatistikleri güncelleme.
 
-* **Fill factor** : fillfactor, bir tablo (ve bir dizin için) için tanımlanabilen bir depolama parametresidir. PostgresSQL, yalnızca sayfa doluluk faktörü yüzdesinden daha azsa sayfaya yeni bir satır ekler. Kalan alan, güncellemeler sonucunda oluşturulan yeni demetler için ayrılmıştır. Tablolar için varsayılan değer 100'dür, yani hiç yer ayrılmamıştır (ve dizinler için varsayılan değer 90'dır).
+### Fill factor
+Fillfactor, bir tablo (ve bir dizin için) için tanımlanabilen bir depolama parametresidir. PostgresSQL, yalnızca sayfa doluluk faktörü yüzdesinden daha azsa sayfaya yeni bir satır ekler. Kalan alan, güncellemeler sonucunda oluşturulan yeni satırlar için ayrılmıştır. Tablolar için varsayılan değer 100'dür, yani hiç yer ayrılmamıştır (ve dizinler için varsayılan değer 90'dır).
+
+* Bir tablonun doldurma faktörü, 10 ile 100 arasında bir yüzdedir. 100 (tam paketleme) varsayılan değerdir. 
+* Daha küçük bir doldurma faktörü belirtildiğinde, INSERT işlemleri tablo sayfalarını yalnızca belirtilen yüzdeye göre doldurur; her sayfada kalan alan, o sayfadaki satırları güncellemek için ayrılmıştır. 
+* Bu, UPDATE'e bir satırın güncellenmiş kopyasını orijinaliyle aynı sayfaya yerleştirme şansı verir; bu, farklı bir sayfaya yerleştirmekten daha etkilidir.
+* Hiçbir zaman güncellenmeyen bir tablo için **tam paketleme** en iyi seçimdir
+* Yoğun güncellenen alan tablolarda daha küçük doldurma faktörleri uygundur. 
+* TOAST tabloları için ayarlanamaz.
+
 
 ### Kaynaklar
 * https://pgdash.io/blog/postgres-transactions.html - Videolu anlatım
