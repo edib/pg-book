@@ -1,3 +1,7 @@
+# [PostgreSQL DBA](https://roadmap.sh/postgresql-dba) 
+- [DBA Checklist](dba_checklist.md)
+--------- 
+
 # [Kurulum](d/kurulum.md)
 # [Veritabanı Yönetimi](d/veritabani-yonetimi.md)
 # [Erişim ve Yetkiler](d/erisim-yetkiler.md)
@@ -14,10 +18,10 @@
 
 
  ## Yardımcı
- * [linux](linux.md)
-* [libvirt](libvirt.md)
-* [postgresql.conf](postgresql.conf.md)
-* [pg_hba.conf](pg_hba.conf.md)
+ * [linux](docs/linux.md)
+* [libvirt](docs/vagrant_n_libvirt.md)
+* [postgresql.conf](d/postgresql.conf.md)
+* [pg_hba.conf](d/pg_hba.conf.md)
 * [Özel Ayarlar](ozel_ayarlar.md)
 * [Konteynerda pg_upgrade kullanımı](docker_pg_upgrade.md)
 * [Bilgi Siteleri](bilgi_siteleri.md)

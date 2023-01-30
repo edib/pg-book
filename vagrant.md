@@ -1,63 +1,42 @@
-# vagrant ve libvirt kullanımı 
+## Virtualbox ve Vagrant kurulumu
+İndirin ve kurun
+
+## Vagrant Kurulumu
+
+### Vagrant kullanımı
+* Vagrant masaüstü ortamları için kod ile otomatik sanal makine oluşturma uygulamasıdır. Varsayılan olarak virtualbox kullanır. Windows ve linux hostlar üzerinde çalışır.
+* Bir yerde sanal makinemizi tanıtıcı bir dizin oluşturup (Örn. postgres01) komut satırından dizine gidiyoruz ve  aşağıdaki komutu çalıştırıyoruz. Komut, eğer makinede yoksa Ubuntu 20.04 imajını vagrant reposundan indirir.
+
+```
+vagrant init generic/ubuntu2004
+```
+
+Yukarıdaki komut bulunulan dizinde Vagrantfile adında bir config dosyası oluşturur. Dosyanın içini silip aşağıdaki satırları ekleyin ve hostname ve ip karşısındaki alanları değiştirin. Uygun ip blokları için [buraya](https://www.wikiwand.com/en/Private_network#/Private_IPv4_address_spaces) bakınız.
+
+![Vagrant virtualbox ağ yapısı](https://user-images.githubusercontent.com/4180560/79636826-3e0d9d80-8183-11ea-8ced-eed33d53e184.png)
 
 
 ```
-egrep -c '(vmx|svm)' /proc/cpuinfo
-    # 0'dan büyük bir sonucun dönmesi gerekiyor. 
-
-kvm-ok
-    INFO: /dev/kvm exists
-    KVM acceleration can be used
-
-# kurulum
-sudo apt install qemu qemu-kvm libvirt-bin  bridge-utils  virt-manager
-
-# vagrant libvirt destek kurulumu
-# son sürüm buradan bulunur. https://github.com/vagrant-libvirt/vagrant-libvirt/
-gem install vagrant-libvirt --version "0.11.3.pre.7" --source "https://rubygems.pkg.github.com/vagrant-libvirt"
-```
-
-### vagrant box indirme
-
-```
-# libvirt için olanı seçip download edin.
-vagrant box add centos/7 
-
-# mutate alt komutunun kullanılabilmesi için kurmanız gerekmektedir. [Bilgi](https://github.com/sciurus/vagrant-mutate)
-vagrant plugin install vagrant-mutate
-
-# libvirt için olan fazla imaj olmadığından başka işletim sistemleri kullanmak isterseniz virtualbox için olan imaj indirip onu libvirt e dönüştürüyoruz.
-vagrant mutate ubuntu/bionic64 libvirt
-
-```
-
-* Sonrasında  indirdiğimiz imajı kullanabilir ve Vagrantfile'ı aşağıdaki üretip 2. adaptör eklemeden management networkünden bağlanabiliriz. 
-
-``` 
 Vagrant.configure("2") do |config|
-
-config.vm.provider "libvirt" do |v|
-    v.memory = 1024
-    v.cpus = 1
-
-    # yeni bir bridge network oluşturup bu network kullanılabilir.
-    #v.management_network_name = "my_network"
-    #v.management_network_address = "10.11.12.0/24"
-end
-
-	config.vm.box = "centos/7"
-	config.vm.hostname = "mypg1"
+	config.vm.box = "generic/ubuntu2204"
+	config.vm.network "private_network", ip: "10.11.12.13"
+	config.vm.hostname = "pg13"
 	config.vm.provision "shell", inline: <<-SHELL
-	sed -i s/^SELINUX=.*$/SELINUX=disabled/ /etc/selinux/config
-	systemctl disable firewalld
   sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config    
   reboot
  SHELL
 end
 ```
 
-vagrant makineyi ayağa kaldırıp ip adresini size gösterecektir. 
+Bu dosyadan sanal makine aktif etmek için makineyi virtualbox altında poweron ederiz.
+
 ```
-vagrant up 
+vagrant up
 ```
 
+poweron süreci bittikten sonra ssh ile kendi yönlendirmesiyle bağlanabiliriz. Masaüstü komut satırını açıyoruz ve bu ip adresine ssh erişimi yapıyoruz.
+```
+ssh vagrant@<sanal_makine_ip>
+# varsayılan parola: "vagrant"
+
+```
