@@ -183,3 +183,4 @@ Fillfactor, bir tablo (ve bir dizin için) için tanımlanabilen bir depolama pa
 * https://tapoueh.org/blog/2018/07/postgresql-concurrency-isolation-and-locking/
 * https://www.cybertec-postgresql.com/en/transactions-in-postgresql-read-committed-vs-repeatable-read/
 * https://postgrespro.com/blog/pgsql/5967910
+* https://www.cybertec-postgresql.com/en/what-is-fillfactor-and-how-does-it-affect-postgresql-performance/
