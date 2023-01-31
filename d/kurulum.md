@@ -1,6 +1,6 @@
 # Kurulum
 
-Eğer kişisel bilgisayarımızda bir sanal makina oluşturarak postgres kurulumu yapmak istiyorsak en kısa yol vagrant iledir. [Vagrant kurulumu](vagrant.md) 
+Eğer kişisel bilgisayarımızda bir sanal makina oluşturarak postgres kurulumu yapmak istiyorsak en kısa yol vagrant iledir. [Vagrant kurulumu](../vagrant.md) 
 ## Gereksinimler
 
 ```
@@ -19,7 +19,7 @@ pg sürüm 15 için ve debian 11 için
 https://www.postgresql.org/download/linux/debian/ adresine gidin
 
 Eğer cluster'ı başlatırken özel ayarlar yapmak istiyorsanız buraya başvurun.
-[Özel initdb ayarları](docs/ozel_ayarlar.md)
+[Özel initdb ayarları](ozel_ayarlar.md)
 Yoksa aşağıdaki gibi devam edin.
 
 Debian sistemlerde pg kümesi otomatik varsayılan dizinlerde oluşturulur. 
