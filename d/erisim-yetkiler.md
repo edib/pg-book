@@ -205,6 +205,49 @@ ALTER TABLE birtablo ENABLE ROW LEVEL SECURITY;
 
 ```
 
+## Yetkiler Çalışması
+
+* Veritabanına bağlanma:
+```sql
+GRANT CONNECT ON DATABASE database_name TO username;
+```
+Grant USAGE on schema
+```sql
+# bunu vermezseniz alttaki nesnelere erişemez.
+GRANT USAGE ON SCHEMA schema_name TO username;
+# Grant on all tables for DML statements: SELECT, INSERT, UPDATE, DELETE:
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA schema_name TO username;
+# Grant all privileges on all tables in the schema:
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA schema_name TO username;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA schema_name TO username;
+```
+
+VT2deki tüm yetkiler
+```sql
+GRANT ALL PRIVILEGES ON DATABASE database_name TO username;
+```
+VT oluşturmak grant yetkisi:
+```sql
+ALTER USER username CREATEDB;
+```
+
+* superuser yap
+  
+```sql
+ALTER USER myuser WITH SUPERUSER;
+```
+
+* superuser yetkisini kaldır
+```sql
+ALTER USER username WITH NOSUPERUSER;
+```
+
+* Yukarıdaki sadece varolan nesneleri etkiler. Bundan sonraki tablolar için.
+```sql
+ALTER DEFAULT PRIVILEGES FOR USER usernameIN SCHEMA schema_name GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO username;
+```
+
+
 [Diğer security yöntemleri](https://www.enterprisedb.com/postgres-tutorials/how-implement-column-and-row-level-security-postgresql)
 
 [Diğer Kullanıcı Yönetimi İşlemleri](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/05-veritabani-yonetimi/kullanici_yonetimi/)

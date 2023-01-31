@@ -66,7 +66,20 @@ Yukarıdaki `SELECT pg_current_wal_lsn();` sorgusundan dönen _3/812FCF08_ çık
 1.  WAL dosyasının mantıksal WAL'daki yerini söyler. 
 2.  Bu mantıksal dosyanın başından itibaren ne kadar ilerde (offset) olduğunu gösterir. Bu rakamlar birbirlerinden mantıksal ve fiziksel yeri çıkarabilmektedir. WAL'ın yeri,  WAL dosyalarının recovery ve replication işlemlerindeki rolünden dolayı kritiktir. 
 
-Her biri 16MB dir. Dolunca yenisine geçer. Ellede tetiklenebilir. _"select pg_switch_wal()"_ yazılmakta olan segmenti geçerek diğer wal segment dosyasına geçer.
+WAL 
+* Her biri 16MB dir. 
+* Dolunca yenisine geçer. 
+* Elle de tetiklenebilir. 
+* _"select pg_switch_wal()"_ yazılmakta olan segmenti geçerek diğer wal segment dosyasına geçer.
+* WAL segment denir. 
+* pg_wal içinde tutulur. 
+* 3 durumda yenisine geçer:
+  * dolunca
+  * `select pg_switch_wal()` ile
+  * `archive_mode` etkinken `archive_timeout` gerçekleşirse
+* [WAL geri dönüşümü](https://www.interdb.jp/pg/img/fig-9-17.png)
+* WAL dosyaları `max_wal_size` aşarsa, bir **checkpoint** başlatılır.
+* `wal_keep_size` ve **replication slots** özelliği de WAL segmenti dosyalarının sayısını etkiler.
 
 * [WAL sayfalarının yapısı(8k)](https://www.interdb.jp/pg/img/fig-9-07.png)
 
@@ -79,7 +92,7 @@ Her biri 16MB dir. Dolunca yenisine geçer. Ellede tetiklenebilir. _"select pg_s
 
 ### WAL ile  config parametreleri
 
-```sh
+```ini
 wal_level = minimal # minimal, replica, or logical
  # minimal sadece servis çakılırsa ve acil kapatmada kullanılabilir
  # replica read only replika sunucuyu beslemek ya da pitr yapma işine yarar.
@@ -141,19 +154,6 @@ Ayrıca `checkpoint_completion_target` (0-1 arasında float)  bir sonraki checkp
 ```
 /usr/lib/postgresql/14/bin/pg_controldata -D <PG_DATA>
 ```
-
-### WAL Dosyaları Yönetimi
-
-* WAL segment denir. 
-* pg_wal içinde tutulur. 
-* 16 MBtır
-* 3 durumda yenisine geçer:
-  * dolunca
-  * `select pg_switch_wal()` ile
-  * `archive_mode` etkinken `archive_timeout` gerçekleşirse
-* [WAL geri dönüşümü](https://www.interdb.jp/pg/img/fig-9-17.png)
-* WAL dosyaları `max_wal_size` aşarsa, bir **checkpoint** başlatılır.
-* `wal_keep_size` ve **replication slots** özelliği de WAL segmenti dosyalarının sayısını etkiler.
 
 ### Sürekli arşivleme
 

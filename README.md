@@ -14,14 +14,14 @@
 # [Streaming Replication](d/replikasyon.md)
 # [Yedekleme](d/yedekleme.md)
 # [İzleme](d/izleme.md)
-# [Explain](https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_explain.html)
+# [Explain](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/08-performans/explain/)
 
 
  ## Yardımcı
- * [linux](docs/linux.md)
+* [linux](docs/linux.md)
 * [libvirt](docs/vagrant_n_libvirt.md)
 * [postgresql.conf](d/postgresql.conf.md)
 * [pg_hba.conf](d/pg_hba.conf.md)
 * [Özel Ayarlar](ozel_ayarlar.md)
 * [Konteynerda pg_upgrade kullanımı](docker_pg_upgrade.md)
-* [Bilgi Siteleri](bilgi_siteleri.md)
+* [Bilgi Siteleri](docs/bilgi_siteleri.md)

@@ -13,9 +13,18 @@
 create table tbl (data int);
 -- tabloya bir sürü blok verisi girişi 
 insert into tbl (data) SELECT * from generate_series(1,1000);
-DELETE FROM tbl WHERE id % 200 != 0;
+\dt+ tbl
+DELETE FROM tbl WHERE data % 200 != 0;
+
+\dt+ tbl
+
 VACUUM tbl;
 
+\dt+ tbl
+
+VACUUM full tbl;
+
+\dt+ tbl
 
 
 ```
@@ -58,6 +67,8 @@ END FOR
 
 ```
 
+[pg_repack](https://github.com/reorg/pg_repack)
+
 
 ## Autovacuum
 
@@ -73,7 +84,7 @@ END FOR
 
 * `autovacuum_max_workers`: Kaç tane VT varsa bu kadar , vakum veya analiz gerektiren bir tablo için bir çalışan işlemi başlatır. autovacuum_max_workers'ın 3 olarak ayarlandığı dört veritabanı varsa, 4. veritabanının mevcut çalışan işlemlerinden biri boşalana kadar beklemesi gerekir.
 * `autovacuum_naptime`: default 1 dakika. Bir sonraki autovacuum tetikleme = `autovacuum_naptime` / <vt sayısı>  sn'dir. 3 vt varsa 60 / 3 = 20 saniyedir.  
-* [tüm autovacuum parametreleri](https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_automatic_vacuuming.html)
+* [tüm autovacuum parametreleri](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/02-veritabani-yapilandirmasi/automatic_vacuuming/)
 
 ### Autovacuum ileri düzey ayarlar
 
@@ -109,6 +120,24 @@ WHERE schemaname = '<hedef_şema>' and relname = '<hedef_tablo>';
 
 * Autovacuum, bazı durumlarda diski etkileyebilir. Bu durumda ek ayarlar gerektirebilir. [1](https://www.percona.com/blog/2018/08/10/tuning-autovacuum-in-postgresql-and-autovacuum-internals/), [2](https://pganalyze.com/blog/visualizing-and-tuning-postgres-autovacuum), [3](https://www.2ndquadrant.com/en/blog/autovacuum-tuning-basics/), [4](https://www.2ndquadrant.com/en/blog/when-autovacuum-does-not-vacuum/)
 
+* Autovacuum daha sık çalışması için 
+
+```ini
+# Autovacuum processini logla
+log_autovacuum_min_duration = 0
+# Daha fazla process çalışsın. 
+autovacuum_max_workers = 6
+autovacuum_naptime = 15s
+# Daha sık çalışması için eşik değerlerini düşür.
+autovacuum_vacuum_threshold = 25
+autovacuum_vacuum_scale_factor = 0.1
+autovacuum_analyze_threshold = 10
+autovacuum_analyze_scale_factor = 0.05
+# autovacuum daha az bölünsün.
+autovacuum_vacuum_cost_delay = 10ms
+autovacuum_vacuum_cost_limit = 1000
+
+```
 
 * Vacuum nasıl çalışır? Örnek:
   

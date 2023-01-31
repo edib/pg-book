@@ -62,6 +62,30 @@
 |  Serializable                    |  Mümkün değil                |  Mümkün değil                         |  Mümkün değil                |  Mümkün değil                        |
 
 
+
+### Satır-seviyesi Kilitleri
+
+Veri sorgulamayı etkilemez; sadece aynı satır için yazmaları ve kilitleri engeller.
+
+**FOR UPDATE**
+  - SELECT FOR UPDATE: 
+  - SELECT ifadesi tarafından getirilen satırların güncelleme (update) için kilitlenmesini sağlar. 
+  - Satırlar üzerinde UPDATE, DELETE, SELECT FOR UPDATE, SELECT FOR NO KEY UPDATE, SELECT FOR SHARE veya SELECT FOR KEY SHARE gerçekleştirmek isteyen diğer işlemler mevcut işlem sona erene kadar engellenir. 
+  - DELETE, where koşullu UPDATE ile
+
+**FOR NO KEY UPDATE**
+  - Daha zayıf
+  - **SELECT FOR KEY SHARE**'i engellemez.
+
+**FOR SHARE**
+  - Diğer işlemlerin (transaction) bu satırlarda UPDATE, DELETE, SELECT FOR UPDATE veya SELECT FOR NO KEY UPDATE yapmasını bloklar
+  - SELECT FOR SHARE veya SELECT FOR KEY SHARE gerçekleştirmesini bloklamaz.
+
+**FOR KEY SHARE**
+  - SELECT FOR UPDATE engellenir. DELETE veya anahtar değerlerini değiştiren herhangi bir UPDATE işlemini gerçekleştirmesini engeller.
+  - SELECT FOR NO KEY UPDATE engellenmez. UPDATE’leri ve SELECT FOR NO KEY UPDATE, SELECT FOR SHARE veya SELECT FOR KEY SHARE’i engellemez.
+  - 
+
 ### TransactionID
 
 * `Transaction`: Veriyi bir kararlı halden diğer bir kararlı hale getirmek. (Banka hesabı)
@@ -136,8 +160,12 @@ testdb=# SELECT lp as tuple, t_xmin, t_xmax, t_field3 as t_cid, t_ctid
 (1 row)
 
 ```
-
-`Dead Tuples`: Diskteki kayıt sırası bozulur (heap table). index için de geçerli. Bunların temizlenmesi gerekir. (AUTOVACUUM, VACUUM)
+*********
+`Dead Tuples`: 
+* Silme ve güncellemede 
+* Diskteki kayıt sırası bozulur (heap table). 
+* index için de geçerli. 
+* Bunların temizlenmesi gerekir. (AUTOVACUUM, VACUUM)
 
 ### UPDATE
 

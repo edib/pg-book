@@ -10,3 +10,6 @@
 ## Alıştırmalar
 * [w3 alıştırmaları](https://www.w3resource.com/postgresql-exercises/)
 * [pgexercises](https://pgexercises.com/)
+
+## Liste
+* [Awesome Postgres](https://github.com/pg-tr/awesome-postgres/blob/master/README.md)
