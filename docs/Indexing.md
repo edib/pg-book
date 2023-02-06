@@ -345,3 +345,8 @@ SELECT relname, indexrelname,idx_scan FROM pg_catalog.pg_stat_user_indexes;
 
 ```
 * Görüldüğü gibi hiç kullanılmayan indexlerimiz mevcut. Disk alanını verimli kullanmak için gereksiz indexleri silebiliriz.
+
+
+## Analyze 
+
+https://andreigridnev.com/blog/2016-04-01-analyze-reindex-vacuum-in-postgresql/
