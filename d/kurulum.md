@@ -72,6 +72,8 @@ Data: /var/lib/pgsql/${version}/data
 
 ### Ayarlar nerede yapılır?
 
+![yapılandırma dosyaları](../images/pg-dosya-sistemi.svg)
+
 Postgresql ayar dosyaları: En Önemli 2 ayar dosyası var.
 *  [postgresql.conf](postgresql.conf.md) [*](https://postgresqlco.nf/en/doc/param/)
 varsayılan yeri ```/var/lib/postgresql/${version}/${cluster_adı}```. Cluster'ın çalışması gereken tüm ayarları içerir. İçinde bir çok parametre vardır. postgresql.conf a alternatif olarak postgresql.auto.conf dosyası da özel ayarların yazılması için kullanılabilir.
