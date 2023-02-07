@@ -5,7 +5,7 @@ Eğer kişisel bilgisayarımızda bir sanal makina oluşturarak postgres kurulum
 
 ```
 gpgyi okumak için
-apt install -y gnupg2
+apt update && apt install -y gnupg2
 
 # ekrana basan dil mesajı için
 
