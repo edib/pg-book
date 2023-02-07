@@ -350,3 +350,7 @@ SELECT relname, indexrelname,idx_scan FROM pg_catalog.pg_stat_user_indexes;
 ## Analyze 
 
 https://andreigridnev.com/blog/2016-04-01-analyze-reindex-vacuum-in-postgresql/
+
+
+## Diğer Kaynaklar
+https://postgrespro.com/blog/pgsql/3994098
