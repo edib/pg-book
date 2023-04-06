@@ -263,8 +263,8 @@ process-max=3
 ### restore
 
 * restore opsiyonu sadece 2 yerde çalışır. Master ve backup sunucusunda. 
-* Tehlikelidir. 
-* Varolan veriniz gider. 
+* Tehlikelidir. (delta restore için geçerlidir)
+* Varolan veriniz gider.  (delta restore için geçerlidir)
 * kurallar:
 * dbnin kapalı olması ya da dizinin boş olması gerek. yoksa hata verir. 
 * `--delta` özelliği vardır. 
