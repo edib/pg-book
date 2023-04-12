@@ -5,6 +5,7 @@
 * [MVCC](https://devcenter.heroku.com/articles/postgresql-concurrency)
 * [pgcasts](https://www.pgcasts.com/), [Youtube](https://www.youtube.com/channel/UCeqAt2IzOJhih70WRncuktQ)
 * [cpu disk karşılaştırması](https://www.prowesscorp.com/computer-latency-at-a-human-scale/)
+* [Scaling Postgres](https://www.youtube.com/@ScalingPostgres) - Weekly shows that educate you on the best ways to scale your PostgreSQL database.
 
 
 ## Alıştırmalar
