@@ -15,6 +15,7 @@
 
 - [ ] Using package managers (APT, YUM, etc.)
 - [ ] Using docker.
+- [ ] Using kubernetes operators
 - [ ] Managing Postgres service using systemd (start, stop, restart, reload).
 - [ ] Managing Postgres service using pg_ctl, or OS-specific tools (like pg_ctlcluster).
 - [ ] Connect to Postgres using psql.
