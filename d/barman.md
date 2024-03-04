@@ -9,9 +9,8 @@ create user barman password '<birparola>';
 
 create user streaming_barman password '<birparola>' replication;
 
-GRANT EXECUTE ON FUNCTION pg_start_backup(text, boolean, boolean) to barman;
-GRANT EXECUTE ON FUNCTION pg_stop_backup() to barman;
-GRANT EXECUTE ON FUNCTION pg_stop_backup(boolean, boolean) to barman;
+GRANT EXECUTE ON FUNCTION pg_backup_start(text, boolean) to barman;
+GRANT EXECUTE ON FUNCTION pg_backup_stop(boolean) to barman;
 GRANT EXECUTE ON FUNCTION pg_switch_wal() to barman;
 GRANT EXECUTE ON FUNCTION pg_create_restore_point(text) to barman;
 
