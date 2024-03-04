@@ -78,9 +78,14 @@ create_slot = auto
 
 ; PATH setting for this server
 path_prefix = "/usr/lib/postgresql/14/bin"
-~                                            
 
 ```
+# ek 
+```
+# local backup alırken bunu yapmam gerekti
+barman switch-xlog --force --archive  node1
+```
+
 
 ## cron 
 * cron olarak wal archive'ı ayarlayalım.
