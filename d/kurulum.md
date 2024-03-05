@@ -80,7 +80,7 @@ varsayılan yeri ```/var/lib/postgresql/${version}/${cluster_adı}```. Cluster'�
 * [pg_hba.conf](pg_hba.conf.md) İstemci erişimi denetimi bu dosyayla sağlanır.
 
 * ------ diğer ayarlar
-* replication: eskiden recovery.conf vardı. 12'de kalktı. postgresql.conf içine yedirildi. 
+* replication: postgresql.conf içinde. 
 * initdbde bazı parametreler var. 
 * her bir objede set edilen/edilebilen. (fillfactor)
 * geliştirici parametreleri
