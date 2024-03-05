@@ -32,7 +32,7 @@
 - [ ] DML queries: querying data, modifying data, filtering data, joining tables.
 - [ ] Advanced topics: transactions, CTE, subqueries, lateral join, grouping, set operations.
 - [ ] DDL queries: managing tables and schemas (create, alter, drop).
-- [ ] Import and export data using COPY. [1](https://github.com/kamranahmedse/developer-roadmap/blob/master/src/data/roadmaps/postgresql-dba/content/104-learn-sql-concepts/102-import-export-using-copy.md)
+- [ ] Import and export data using COPY. [1](https://github.com/kamranahmedse/developer-roadmap/blob/master/src/data/roadmaps/postgresql-dba/content/104-learn-sql-concepts/102-import-export-using-copy.md), [2](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/09-yuksek-erisilebilirlik/pgloader/)
 
 ### Kaynaklar
 *   [DB Fiddle](https://www.db-fiddle.com/)
@@ -43,9 +43,11 @@
 
 * postgresql.conf
 * pg_hba.conf
-
-- [ ]    Resources usage
-- [ ]    Write-ahead Log
+* 
+- [ ]    Resources usage [1](https://github.com/dalibo/pg_activity), 
+- [ ]    Performance Parameters
+   - https://techcommunity.microsoft.com/t5/azure-database-for-postgresql/postgresql-making-index-creation-faster/ba-p/4067939
+- [ ]    Write-ahead Log 
 - [ ]    Checkpoints and Background Writer
 - [ ]    Cost-based vacuum and auto-vacuum
 - [ ]    Replication
