@@ -32,7 +32,7 @@
 - [ ] DML queries: querying data, modifying data, filtering data, joining tables.
 - [ ] Advanced topics: transactions, CTE, subqueries, lateral join, grouping, set operations.
 - [ ] DDL queries: managing tables and schemas (create, alter, drop).
-- [ ] Import and export data using COPY.
+- [ ] Import and export data using COPY. [1](https://github.com/kamranahmedse/developer-roadmap/blob/master/src/data/roadmaps/postgresql-dba/content/104-learn-sql-concepts/102-import-export-using-copy.md)
 
 ### Kaynaklar
 *   [DB Fiddle](https://www.db-fiddle.com/)
