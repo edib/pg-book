@@ -30,7 +30,7 @@ Debian sistemlerde pg kümesi otomatik varsayılan dizinlerde oluşturulur.
 psql --help
  ```
 [psql tanıtımı](https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_postgresql_istemcileri_psql.html)
-[psql periodic table](https://www.reddit.com/r/PostgreSQL/comments/bzup2k/a_periodic_table_of_psql_commands_higher/)
+[psql periodic table](https://www.reddit.com/media?url=https%3A%2F%2Fexternal-preview.redd.it%2FWouP-ObT2rA0hrikf25-ebcxL7QpJ8qqIbYwO4n42Fc.png%3Fwidth%3D1080%26crop%3Dsmart%26auto%3Dwebp%26s%3Def739bed33fcbbe432cf3f36fa3accb7fa3b8e4b)
 
 
 
