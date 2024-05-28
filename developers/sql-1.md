@@ -59,15 +59,18 @@ WHERE length = 160
 		AND rental_duration <= 6);
 
 ```
+
 ### Gömülü Fonksiyonlar
+* https://www.postgresql.org/docs/current/functions.html
+
 ```
--- while converting length of movie from minute to hour
+-- film süresini dakikadan saate çevirirken
 SELECT film_id, title, length,
 		(length/60.0) length_in_hour,
 		round((length/60.0),2) length_in_hour_round
 FROM film;
 
--- where the length of the movie is over 2 hours
+-- film süresi 2 saatten fazla olan filmleri seçin
 SELECT film_id, title, length,
 		(length/60.0) length_in_hour,
 		round((length/60.0),2) length_in_hour_round
@@ -110,7 +113,7 @@ WHERE LENGTH(first_name) = 4
 SELECT first_name, last_name
 FROM Actor
 WHERE LENGTH(first_name) = 4
-	AND LENGTH(last_name) = 4;
+AND LENGTH(last_name) = 4;
 
 -- while converting all the last name in the upper case
 SELECT first_name, last_name, UPPER(last_name) UpperLastName
@@ -120,6 +123,7 @@ FROM Actor;
 SELECT first_name, REPLACE(first_name,'a','@'), last_name
 FROM Actor;
 ```
+
 ### Tarih işlemleri
 ```
 -- while displaying rental duration in days and hours

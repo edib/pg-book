@@ -49,7 +49,7 @@ ALTER ROLE birrole SET search_path TO birsema,baskasema;
 * https://hevodata.com/learn/postgresql-partitions/
 
 ### fdw
-#### [postgres_fdw](d/fdw.md)
+#### [postgres_fdw](dba/fdw.md)
 * https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_fdw.html#postgres_fdw
 * https://wiki.postgresql.org/wiki/Foreign_data_wrappers
 

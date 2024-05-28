@@ -351,4 +351,4 @@ pgbackrest --stanza=main --delta restore \
 * https://pgbackrest.org/user-guide.html#async-archiving
 * https://pgbackrest.org/user-guide.html#standby-backup
 
-## [barman](https://github.com/edib/pg-dba-egitim/blob/master/d/barman.md)
+## [barman](https://github.com/edib/pg-dba-egitim/blob/master/dba/barman.md)
