@@ -5,7 +5,7 @@
 
 ### Vagrant kullanımı
 * Vagrant masaüstü ortamları için kod ile otomatik sanal makine oluşturma uygulamasıdır. Varsayılan olarak virtualbox kullanır. Windows ve linux hostlar üzerinde çalışır.
-* Bir yerde sanal makinemizi tanıtıcı bir dizin oluşturup (Örn. postgres01) komut satırından dizine gidiyoruz ve  aşağıdaki komutu çalıştırıyoruz. Komut, eğer makinede yoksa Ubuntu 20.04 imajını vagrant reposundan indirir.
+* Bir yerde sanal makinemizi tanıtıcı bir dizin oluşturup (Örn. postgres01) komut satırından dizine gidiyoruz ve  aşağıdaki komutu çalıştırıyoruz. Komut, eğer makinede yoksa Ubuntu 22.04 imajını vagrant reposundan indirir.
 
 ```
 vagrant init generic/ubuntu2204
