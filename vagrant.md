@@ -8,7 +8,7 @@
 * Bir yerde sanal makinemizi tanıtıcı bir dizin oluşturup (Örn. postgres01) komut satırından dizine gidiyoruz ve  aşağıdaki komutu çalıştırıyoruz. Komut, eğer makinede yoksa Ubuntu 20.04 imajını vagrant reposundan indirir.
 
 ```
-vagrant init generic/ubuntu2004
+vagrant init generic/ubuntu2204
 ```
 
 Yukarıdaki komut bulunulan dizinde Vagrantfile adında bir config dosyası oluşturur. Dosyanın içini silip aşağıdaki satırları ekleyin ve hostname ve ip karşısındaki alanları değiştirin. Uygun ip blokları için [buraya](https://www.wikiwand.com/en/Private_network#/Private_IPv4_address_spaces) bakınız.
