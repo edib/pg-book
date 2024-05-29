@@ -86,7 +86,7 @@ WHERE (length/60.0) > 2;
 -- while converting rental_rate to nearest higher integer
 SELECT film_id, title, rental_rate ,
 		ceiling(rental_rate) rental_rate_new
-FROM film;
+FROM film;chunk_time_interval
 
 ```
 

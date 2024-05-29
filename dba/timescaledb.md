@@ -95,7 +95,9 @@ Data:
 * 
 
 * tsdb soyutlama birimi
-```
+
+```sql
+
 CREATE TABLE ...
 SELECT create_hypertable()
 
@@ -106,9 +108,23 @@ CREATE TABLE conditions (
    humidity    DOUBLE PRECISION  NULL
 );
 
+-- alternatif 1
 SELECT create_hypertable('conditions', 'time');
 
+-- alt-2
+
+SELECT create_hypertable(
+  'conditions',
+  by_range('time', INTERVAL '1 day')
+);
+
+-- chunk intervali sonradan değiştirmek için
+SELECT set_chunk_time_interval('conditions', INTERVAL '24 hours');
+
+
 ```
+
+* `set_chunk_time_interval` ile aralık değiştirdiğinizde, yeni ayar mevcut parçalara değil yalnızca yeni parçalara uygulanır.  Örneğin, `chunk_time_interval` değerini 1 yıl olarak ayarlarsanız ve veri eklemeye başlarsanız artık o yılın öbeğini kısaltamazsınız. Bu durumu düzeltmeniz gerekiyorsa yeni bir hiper tablo oluşturun ve verilerinizi taşıyın.
 
 * `create_hypertable` işlevinde kullanılan zaman sütunu, zaman damgası, tarih veya tamsayı türlerini destekler; bu nedenle, artabildiği sürece açıkça zamana dayalı olmayan bir parametre kullanabilirsiniz. Örneğin, id seqeuence.
 * Var olan bir tablodan hiper tabloya veri taşımanız gerekiyorsa, `create_hypertable` işlevini çağırırken `migrate_data` bağımsız değişkenini true olarak ayarlayın. [*](https://docs.timescale.com/timescaledb/latest/how-to-guides/migrate-data/)
@@ -133,6 +149,12 @@ ALTER TABLE TABLE_NAME
 * hypertablelar ek kolonlara göre bölümlenebilirler. (device id vb.) (hash buckets)
 * select sorguları chuckların sınırlarını bilir ve belirlenen chunck dışında arama yapmaz. `time > now() - interval '1 week'`
 
+```sql
+
+SELECT set_chunk_time_interval('conditions', INTERVAL '7 days');
+
+
+```
 
 ## Hypertables ve Chunks Faydaları
 
@@ -190,6 +212,18 @@ SELECT create_distributed_hypertable('conditions', 'time', 'location');
 * Asenkron bir şekilde, tablolar satır tabanlı bir formdan sütunlu bir forma dönüştürülür. Kullanıcılar standart bir satır tabanlı şema görmeye devam ederler. 
 * Sorgu zamanında sıkıştırılmış veri açılarak sorguya cevap verilir. 
 
+```sql
+
+-- Hypertable üzerinde sıkıştırmayı etkinleştirin
+ALTER TABLE conditions SET (timescaledb.compress);
+
+-- 60 günden daha eski chunk'ları sıkıştırmak için bir politika ekleyin
+SELECT add_compression_policy('conditions', INTERVAL '60 days');
+
+
+```
+* Detay kullanım : https://docs.timescale.com/api/latest/compression/alter_table_compression/
+
 ## Sürekli toplamlar
 
 * Büyük miktarda zaman serisi verisine dokunan toplu sorguların `(min(), max(), avg()...)` hesaplanması uzun zaman alabilir çünkü sistemin her sorgu yürütmesinde büyük miktarda veriyi taraması gerekir. 
@@ -199,7 +233,8 @@ SELECT create_distributed_hypertable('conditions', 'time', 'location');
 
 * Örnek:
 
-```
+```sql
+
 CREATE TABLE conditions (
       time TIMESTAMPTZ NOT NULL,
       device INTEGER NOT NULL,
@@ -249,12 +284,16 @@ ORDER BY bucket;
 * `timescaledb.materialized_only=true` sürekli güncellemeyi kapatmak için
 * `refresh_continuous_aggregate`: elle güncellemeyi sağlar.
 
-```
+```sql
+
 CALL refresh_continuous_aggregate('conditions', '2020-01-01', '2020-02-01');
-# https://docs.timescale.com/api/latest/continuous-aggregates/refresh_continuous_aggregate/#sample-usage
-# https://www.lhsz.xyz/read/TimescaleDB-2.1-en/spilt.31.55581822f2599198.md
 
 ```
+
+* Diğer kaynaklar [1](https://docs.timescale.com/api/latest/continuous-aggregates/refresh_continuous_aggregate/#sample-usage)
+[2](https://www.lhsz.xyz/read/TimescaleDB-2.1-en/spilt.31.55581822f2599198.md)
+[3](https://docs.timescale.com/api/latest/continuous-aggregates/create_materialized_view/)
+
 
 ### veri saklama
 
@@ -301,7 +340,5 @@ SELECT remove_retention_policy('conditions');
 
 ## kurulum
 
-* [*](https://docs.timescale.com/install/latest/self-hosted/installation-debian/)
-
-
-
+* [debian](https://docs.timescale.com/install/latest/self-hosted/installation-debian/)
+* [kubernets](https://github.com/imusmanmalik/cloudnative-pg-timescaledb-postgis-containers/tree/main)
