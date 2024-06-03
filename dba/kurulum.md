@@ -12,6 +12,14 @@ apt update && apt install -y gnupg2
 locale-gen tr_TR.UTF-8
 localedef -i tr_TR -f UTF-8 tr_TR.UTF-8
 
+
+CREATE DATABASE mydatabase
+    WITH OWNER = your_username
+         ENCODING = 'UTF8'
+         LC_COLLATE = 'tr_TR.UTF-8'
+         LC_CTYPE = 'tr_TR.UTF-8'
+         TEMPLATE = template0;
+
 ```
 
 ## Postgres Kurulumu
