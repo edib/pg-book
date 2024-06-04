@@ -105,6 +105,56 @@ pg_ctl -D /var/lib/postgresql/${version}/${küme_adı}/ ${action}
 systemctl ${action} postgresql.service
 
 ```
+## debian cluster manager
+
+```bash
+
+## cluster oluşturmak için
+pg_createcluster 
+Usage: /usr/bin/pg_createcluster [options] <version> <cluster name> [-- <initdb options>]
+
+Options:
+  -u <uid>      cluster owner and superuser (default: 'postgres')
+  -g <gid>      group for data files (default: primary group of owner)
+  -d <dir>      data directory (default: 
+                /var/lib/postgresql/<version>/<cluster name>)
+  -s <dir>      socket directory (default: /var/run/postgresql for clusters
+                owned by 'postgres', /tmp for other clusters)
+  -l <dir>      path to desired log file (default:
+                /var/log/postgresql/postgresql-<version>-<cluster>.log)
+  --locale <encoding>
+                set cluster locale (default: inherit from environment)
+  --lc-collate/ctype/messages/monetary/numeric/time <locale>
+                like --locale, but only set for a particular category
+  -e <encoding> Default encoding (default: derived from locale)
+  -p <port>     port number (default: next free port starting from 5432)
+  --start       start the cluster after creating it
+  --start-conf auto|manual|disabled
+                Set automatic startup behaviour in start.conf (default: 'auto')
+  --createclusterconf=file alternative createcluster.conf to use
+  --environment=file alternative environment file to use
+  <initdb options> other options to pass to initdb
+
+
+# kurulu clusterları görüntülemek için
+pg_lscluster 
+
+Usage: /usr/bin/pg_lsclusters [-hjs]
+
+Options:
+  -h --no-header   Omit column headers in output
+  -j --json        JSON output
+  -s --start-conf  Include start.conf information in status column
+     --help        Print help
+
+
+# clusterla etkileşim kurmak için
+
+pg_ctlcluster 
+Error: Usage: /usr/bin/pg_ctlcluster <version> <cluster> <action> [-- <pg_ctl options>]
+
+```
+
 
 
 

@@ -72,6 +72,6 @@
 * Customizations: Composite, Custom Types
 
 
-## [PostgreSQL Kurulumu](/home/iek/development/postgres/pg-book/dba/kurulum.md)
+## [PostgreSQL Kurulumu](dba/kurulum.md)
 
-## PostgreSQL Konfigürasyonu
+## [PostgreSQL Konfigürasyonu](dba/postgresql.conf.md)
