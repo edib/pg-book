@@ -21,7 +21,7 @@
 ```
 degerlidb=# SELECT id, data FROM tbl_a WHERE id < 300 ORDER BY data;
 
-```
+``` 
 
 [parse tree](https://www.interdb.jp/pg/img/fig-3-02.png)
 
@@ -101,7 +101,11 @@ Sort  (cost=182.34..183.09 rows=300 width=8)
 * **Toplam maliyet**
 
 ```sql
-testdb=# EXPLAIN SELECT * FROM tbl;
+CREATE TABLE tbl (id int PRIMARY KEY, data int);
+
+INSERT INTO tbl SELECT generate_series(1,10000),generate_series(1,10000);
+
+EXPLAIN SELECT * FROM tbl;
                         QUERY PLAN                        
 ---------------------------------------------------------
     Seq Scan on tbl  (cost=0.00..145.00 rows=10000 width=8)
@@ -113,11 +117,11 @@ testdb=# EXPLAIN SELECT * FROM tbl;
 ```
 
 ```sql
-testdb=# CREATE TABLE tbl (id int PRIMARY KEY, data int);
-testdb=# CREATE INDEX tbl_data_idx ON tbl (data);
-testdb=# INSERT INTO tbl SELECT generate_series(1,10000),generate_series(1,10000);
-testdb=# ANALYZE;
-testdb=# \d tbl
+CREATE TABLE tbl (id int PRIMARY KEY, data int);
+CREATE INDEX tbl_data_idx ON tbl (data);
+INSERT INTO tbl SELECT generate_series(1,10000),generate_series(1,10000);
+ANALYZE;
+\d tbl
       Table "public.tbl"
  Column |  Type   | Modifiers 
 --------+---------+-----------
@@ -196,16 +200,24 @@ testdb=# EXPLAIN SELECT * FROM tbl WHERE id < 8000;
 * pg_stat eklentisi
 
 ```
-select * from pg_stat_*; 
+ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';
+
+-- postgres servisi restart 
+
+create extension pg_stat_statements; 
+
+select * from pg_stat_statements; 
 
 ```
 
 ## Index-Only Scans
 [Yapısı](https://www.interdb.jp/pg/img/fig-7-07.png)
 
-
-
 ### Index Scan
 [Maliyet Hesabı](https://www.interdb.jp/pg/pgsql03.html#_3.2.)
 
 
+
+## Diğer Kaynaklar
+
+* https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/08-performans/sorgularin_iyilestirilmesi/

@@ -89,20 +89,20 @@ pg_restore -d {vt_adi} dump.dosyasi.dump
 
 ## pgbackrest
 
-* Parallel Backup & Restore 
-* Local or Remote Operation 
+* Parallel Backup & Restore
+* Local or Remote Operation
 * Multiple Repositories
-* Full, Incremental, & Differential Backups 
+* Full, Incremental, & Differential Backups
 * Backup Rotation & Archive Expiration
 * Backup Integrity
   * Checksums
   * Fast restore
-* Page Checksums 
-* Backup Resume 
+* Page Checksums
+* Backup Resume
 * Streaming Compression & Checksums
-* Delta Restore 
+* Delta Restore
 * Parallel, Asynchronous WAL Push & Get
-* Tablespace & Link Support 
+* Tablespace & Link Support
 * S3 compatible
 * Encryption
 

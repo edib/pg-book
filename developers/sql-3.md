@@ -4,12 +4,18 @@
 ### TABLESPACE
 ### SCHEMA
 ### TABLE
+* [create table örnekleri](https://tubitak-bilgem-yte.github.io/pg-gelistirici/docs/02-sorgu-yapisi-davranislari/sorgu_tipleri/
+)
+
 ### SEQUENCE
+* https://www.postgresql.org/docs/current/sql-createsequence.html
 
 ### INDEX
 Tablolara giriş noktasıdır.
 Tablodaki bir veriye işaret eder.
 İndexler tablolardan farklı yerde depolanır.
+
+
 
 
 #### Btree
@@ -22,6 +28,8 @@ Tablodaki bir veriye işaret eder.
 ### VIEW
 ### FUNCTION
 ### STORED PROCEDURE
+
+
 
 ### TRIGGER
 Trigger,  `INSERT`, `UPDATE`, `DELETE` ya da `TRUNCATE` SQL işlemlerinden biri gerçekleştiğinde otomatik olarak tetiklenen bir fonksiyondur. Trigger oluşturabilmek için

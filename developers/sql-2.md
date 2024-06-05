@@ -4,6 +4,42 @@
 belli bir şarta uymayan kayıt gruplarını elemek için kullanılır. Sıklıkla `group by` ile birlikte kullanılır. Örneğin aşağıdaki sorguyu `where` ile yazamayız. Çünkü `where` her bir satır için filtre oluştururken `having` bütünleme fonksiyonlarını çalıştırmamıza izin verir.
 
 ```
+
+-- Create the customer table
+CREATE TABLE customer (
+    customer_id SERIAL PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+-- Create the payment table
+CREATE TABLE payment (
+    payment_id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customer(customer_id),
+    amount NUMERIC(10, 2),
+    payment_date DATE
+);
+
+-- Insert sample data into the customer table
+INSERT INTO customer (name) VALUES
+('John Doe'),
+('Jane Smith'),
+('Alice Johnson'),
+('Bob Brown');
+
+-- Insert sample data into the payment table
+INSERT INTO payment (customer_id, amount, payment_date) VALUES
+(1, 50.00, '2023-01-01'),
+(1, 75.00, '2023-02-01'),
+(1, 100.00, '2023-03-01'),
+(2, 60.00, '2023-01-01'),
+(2, 50.00, '2023-02-01'),
+(2, 70.00, '2023-03-01'),
+(3, 30.00, '2023-01-01'),
+(3, 20.00, '2023-02-01'),
+(4, 300.00, '2023-01-01'),
+(4, 50.00, '2023-02-01');
+
+
 SELECT
    customer_id,
    SUM (amount)
@@ -12,7 +48,7 @@ FROM
 GROUP BY
    customer_id
 HAVING
-   SUM (amount) > 200;
+   SUM (amount) > 100;
 ```
 
 ### join türleri

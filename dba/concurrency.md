@@ -200,8 +200,45 @@ Fillfactor, bir tablo (ve bir dizin için) için tanımlanabilen bir depolama pa
 * Daha küçük bir doldurma faktörü belirtildiğinde, INSERT işlemleri tablo sayfalarını yalnızca belirtilen yüzdeye göre doldurur; her sayfada kalan alan, o sayfadaki satırları güncellemek için ayrılmıştır. 
 * Bu, UPDATE'e bir satırın güncellenmiş kopyasını orijinaliyle aynı sayfaya yerleştirme şansı verir; bu, farklı bir sayfaya yerleştirmekten daha etkilidir.
 * Hiçbir zaman güncellenmeyen bir tablo için **tam paketleme** en iyi seçimdir
-* Yoğun güncellenen alan tablolarda daha küçük doldurma faktörleri uygundur. 
+* Yoğun güncellenen alan tablolarda daha küçük doldurma faktörleri uygundur.
 * TOAST tabloları için ayarlanamaz.
+
+#### İyi-kötü tarafı
+
+**Sık Yapılan Ekleme/Güncelleme İşlemleri**: `FILLFACTOR`'ı düşürmek, sık sık ekleme ve güncelleme işlemlerinin yapıldığı ortamlarda faydalıdır, çünkü bu sayede sayfa bölünmelerinin olasılığı azaltılır.
+
+**Parçalanma Dengesi**: `FILLFACTOR`'ı düşürmek, yazma ağırlıklı iş yükleri için performansı artırabilir, ancak aynı zamanda toplam sayfa sayısını da artırarak verilerin daha fazla parçalanmasına ve potansiyel olarak daha yavaş okuma performansına yol açabilir. Doğru dengeyi bulmak önemlidir.
+
+```sql
+-- Create a sample table
+CREATE TABLE example_table (
+    id SERIAL PRIMARY KEY,
+    data TEXT
+);
+
+-- Insert some sample data
+INSERT INTO example_table (data)
+SELECT md5(random()::text)
+FROM generate_series(1, 1000);
+
+-- Alter the table to set FILLFACTOR to 70
+ALTER TABLE example_table SET (FILLFACTOR = 70);
+
+-- Create an index with FILLFACTOR set to 70
+CREATE INDEX example_index ON example_table (data) WITH (FILLFACTOR = 70);
+
+-- Check FILLFACTOR for the table
+SELECT relname, reloptions
+FROM pg_class
+WHERE relname = 'example_table';
+
+-- Check FILLFACTOR for the index
+SELECT indexname, indexdef
+FROM pg_indexes
+WHERE tablename = 'example_table';
+
+
+```
 
 
 ### Kaynaklar
