@@ -38,5 +38,4 @@ UPDATE hesaplar SET bakiye = bakiye + 100.00
 UPDATE subeler SET bakiye = bakiye + 100.00
     WHERE isim = (SELECT sube_adi FROM hesaplar WHERE isim = 'B');
 
-
 ```
