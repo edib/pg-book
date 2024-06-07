@@ -301,117 +301,138 @@ ALTER TABLESPACE genel_alan OWNER TO yazilim_grubu;
 
 * Belirli bir sütuna girilen değeri belirtilen şartlara uygunluğunu kontrol eder.
 
-```
-postgres=# CREATE TABLE public.tb_ogrenci_notlar(
+```sql 
+CREATE TABLE public.tb_ogrenci_notlar(
 ogrenci_id integer,
 ders_id Integer,
 vize1 INTEGER DEFAULT 0 CHECK (vize1 > 0),
 vize2 INTEGER CHECK (vize2> 0) DEFAULT 0,
 final INTEGER CHECK (final = (vize1 + vize2)/2::INTEGER));
+
 ```
+
 * Örneğimizde görüldüğü üzere kısıtlama ifademiz veri tipinden sonra gelmelidir. Veri tipinden sonra gelen diğer bir ifade de **DEFAULT** değerdir.
 * Kısıtlamamızda **CHECK** ifadesinden sonra parantez içinde istenilen şartlar yazılmalıdır.
 
 *Aynı kolonda birden fazla kontrol yapılmak istenirse*
-```
-postgres=# CREATE TABLE public.tb_ogrenci_notlar(
+
+```sql
+
+CREATE TABLE public.tb_ogrenci_notlar(
 ogreci_id integer,
 ders_id integer,
 vize1 integer default 0  check (vize1> 0 and vize1 <=100),
 vize2 integer default 0 check (vize2 > 0 and vize2 <=100),
 final integer CONSTRAINT vize_final_not_uyumsuzlugu CHECK (final = (vize1 + vize2)/2::INTEGER and final > 0));
+
 ```
 
 * Sonradan tabloya **CHECK** Constraint eklemek istersek **ALTER TABLE** ifadesi kullanılır:
-  ```
-  postgres=# ALTER TABLE public.tb_ogrenci_notlar ADD CHECK (final> 0 and final<=100 );
-  ALTER TABLE
-  ```
+
+```sql
+
+ALTER TABLE public.tb_ogrenci_notlar ADD CHECK (final> 0 and final<=100 );
+
+```
+
 * Var olan bir **CHECK** Constraint'i silmek için **ALTER TABLE** ifadesi şu şekilde kullanılır.
+  
+```sql
+
+ALTER TABLE public.tb_ogrenci_notlar DROP CONSTRAINT vize_final_not_uyumsuzlugu;
+
   ```
-  postgres=# ALTER TABLE public.tb_ogrenci_notlar DROP CONSTRAINT vize_final_not_uyumsuzlugu;
-  ALTER TABLE
-  ```
+  
 ## **NOT NULL** Constraint
 
 * **IS NULL**: Bu ifade değerin **NULL** olduğunu kontrol eder.(vize1 is NULL) ifadesinde vize1 değeri **NULL** ise olumlu; değilse olumsuz dönecektir.
 * **IS NOT NULL**: Değerin NULL olmadığını kontrol etmek için kullanılır.
 * PostgreSQL'de bir kolonun **NULL** dan farklı bir değer girilmesi gerektiğinde **NOT NULL** Constraint'i kullanılır.
-  ```
-  postgres=# CREATE TABLE public.tb_ogrenci_notlar(
-  ogreci_id integer NOT NULL,
-  ders_id integer NOT NULL,
-  vize1 integer default 0  check (vize1> 0 and vize1 <=100),
-  vize2 integer default 0 check (vize2 > 0 and vize2 <=100),
-  final integer CONSTRAINT vize_final_not_uyumsuzlugu CHECK (final = (vize1 + vize2)/2::INTEGER and final > 0));
-  ```
+
+```sql
+CREATE TABLE public.tb_ogrenci_notlar(
+ogreci_id integer NOT NULL,
+ders_id integer NOT NULL,
+vize1 integer default 0  check (vize1> 0 and vize1 <=100),
+vize2 integer default 0 check (vize2 > 0 and vize2 <=100),
+final integer CONSTRAINT vize_final_not_uyumsuzlugu CHECK (final = (vize1 + vize2)/2::INTEGER and final > 0));
+```
+
 * Var olan bir tablonun kolonuna **NOT NULL** kontrolü eklemek için **ALTER TABLE** ifadesi kullanılır.
 
 ## **UNIQUE** Constraint
 
 * Benzersiz kısıtlaması, bir tabloda bir kolonun veya kolon grubunun tablodaki satırlar içinde takrarını önleyen bir kontroldür.
 * Öğrenci No ve TC Kimlik No alanlarını tekrara izin vermeyecek şekilde oluşturalım.
-  ```
-  postgres=# CREATE TABLE IF NOT EXISTS public.tb_ogrenci2(
-  id SERIAL NOT NULL,
-  ogrenci_no BIGINT UNIQUE,
-  adi VARCHAR(50) NOT NULL,
-  soyadi VARCHAR(50) NOT NULL,
-  tc_kimlik_no BIGINT UNIQUE,
-  bolum_id INTEGER NULL);
-  ```
+
+```sql
+CREATE TABLE IF NOT EXISTS public.tb_ogrenci2(
+id SERIAL NOT NULL,
+ogrenci_no BIGINT UNIQUE,
+adi VARCHAR(50) NOT NULL,
+soyadi VARCHAR(50) NOT NULL,
+tc_kimlik_no BIGINT UNIQUE,
+bolum_id INTEGER NULL);
+```
+
 * Var olan bir tablonun kolonuna **UNIQUE** kısıtı eklemek isterseniz **CREATE UNIQUE INDEX** komutu kullanılır:
-    ```
-    postgres=# CREATE UNIQUE INDEX ogrenci_no_unique_index ON public.tb_ogrenci(ogrenci_no);
-    ```
+
+```sql
+CREATE UNIQUE INDEX ogrenci_no_unique_index ON public.tb_ogrenci(ogrenci_no);
+```
+
 ## Primary Key Constraint
 
 * Primary key istenilen sütunların benzersiz ve boş olmamasını sağlayan bir index oluşturur.
 * NOT NULL ve UNIQUE kısıtlamalarının birleşmiş hali denilebilir.
 
-```
+```sql
 postgres=# CREATE TABLE IF NOT EXISTS tb_ogrenci (
 ID INTEGER PRIMARY KEY,
 ad VARCHAR(50),
 soyad Varchar(50),
 Tc_kimlik_no BIGINT );
 ```
+
 * Örneğimizde ID alanını **PRIMARY KEY** olarak tanımladık.
 * Birden fazla sütunun **PRIMARY KEY** olarak tanımlanması gerekirse:
-  ```
-  postgres=# CREATE TABLE IF NOT EXISTS tb_ogrenci (
-  ID INTEGER ,
-  ad VARCHAR(50),
-  soyad Varchar(50),
-  Tc_kimlik_no BIGINT,
-  PRIMARY KEY (ID, Tc_kimlik_no) );
-  ```
+
+```sql
+CREATE TABLE IF NOT EXISTS tb_ogrenci (
+ID INTEGER ,
+ad VARCHAR(50),
+soyad Varchar(50),
+Tc_kimlik_no BIGINT,
+PRIMARY KEY (ID, Tc_kimlik_no) );
+```
 
 * Sonradan Primary Key eklemek istersek, ilk önce eklenmek isnenen sütunda tekrar eden kayıt var mı, kontrol etmemiz gerekir. Var ise bu kayıtları silmeliyiz. Aksi takdirde ***duplicated*** hatası alınır.
 
 **Primary Key** Kaldırmak:  
 
 * Var olan birincil anahtar kasıtlaması kaldırmak için, **ALTER TABLE** ifadesi kullanılır:
-  ```
-  postgres=# ALTER TABLE tb_ogrenci DROP CONSTRAINT tb_ogrenci_pkey ;
-  ```
+
+```sql
+ALTER TABLE tb_ogrenci DROP CONSTRAINT tb_ogrenci_pkey ;
+```
+
 ## Foreign Key Constraint
 
 * Bir sütun veya sütun grubundaki değerlerin başka bir tablonun bazı satırlarında görünen değerlerle eşleşmesi gerektiğini belirtir, ilgili iki tablo arasındaki referans bütünlüğünün korunmasını sağlar.
 
-```
-postgres=# CREATE TABLE public.tb_ogrenci (
+```sql
+CREATE TABLE public.tb_ogrenci (
 id SERIAL NOT NULL,
 ad VARCHAR(50) NOT NULL,
 soyad VARCHAR(50) NOT NULL,
 tc_kimlikno BIGINT NOT NULL UNIQUE,
 primary key(id) );
 ```
-*ID sütununda Primary Key olduğunu kaçırmayalım.*
 
+* ID sütununda Primary Key olduğunu kaçırmayalım.*
 
-```
-postgres=# CREATE TABLE public.tb_ogrenci_notlar (
+```sql
+CREATE TABLE public.tb_ogrenci_notlar (
 id SERIAL NOT NULL,
 ogrenci_id INTEGER,
 ders_adi VARCHAR(50),
@@ -419,6 +440,7 @@ notu NUMERIC(5,2),
 primary key(id),
 FOREIGN KEY (ogrenci_id) REFERENCES tb_ogrenci (id) ) ;
 ```
+
 * **FOREIGN KEY (ogrenci_id) REFERENCES tb_ogrenci (id)** ifadesi ile tb_ogrenci_notlar tablosunun ogrenci_id sütununu referans göstererek tb_ogrenci tablosunun ID sütununa bağladık.
 
 
