@@ -30,12 +30,12 @@ postgres  2605  2567  0 09:51 ?        00:00:00 postgres: logical replication la
 * `logical replication launcher`: logical replication işlemini yürütür. 
 * `archiver`: WAL dosyası dolunca bu verileri segment dosyası yeniden kullanım için geri dönüştürülmeden önce bir yere kaydeder.
 
+###  [görsel](https://www.interdb.jp/pg/pgsql02/01.html)
+
 ## Bellek Mimarisi
 
 * Yerel bellek: her bir işlem kullanır.
 * Ortak bellek: tüm server kullanır. 
-
-[Yapısı](https://www.interdb.jp/pg/img/fig-2-02.png)
 
 ### Yerel bellek alanı
 
@@ -49,16 +49,11 @@ postgres  2605  2567  0 09:51 ?        00:00:00 postgres: logical replication la
 `wal buffer`: kalıcı bir depolamaya yazmadan önce WAL verilerinin arabelleğe alma alanı.
 `commit log`: Concurrency Control (CC) mekanizması için tüm işlemlerin (örneğin, in_progress, committed, aborted) durumlarını tutar.
 
-
-### Buffer Yönetimi 
-
-[Buffer storage ve backend ilişkisi](https://www.interdb.jp/pg/img/fig-8-01.png)
-[Buffer manager](https://www.interdb.jp/pg/img/fig-8-02.png)
-
-
  * **clock sweep**: page replacement algorithms. Dolan buffer'ı temizlemek için 
 * **LRU**: Least Recently Used
 **checkpointer** ve **background writer** temizleme işini yapar. 
+
+### [Bellek Yapısı](https://www.interdb.jp/pg/pgsql02/02.html)
 
 
 ### Tampon Yöneticisi Kilitleri

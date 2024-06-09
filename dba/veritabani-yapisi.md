@@ -5,7 +5,7 @@
 
 Bir **veritabanı kümesi**, bir PostgreSQL sunucusu tarafından yönetilen bir veritabanları topluluğudur. Bir `base` dizini vardır. 
 
-[vt yapısı](http://www.interdb.jp/pg/img/fig-1-01.png)
+[vt yapısı](https://www.interdb.jp/pg/pgsql01/01.html)
 
 
 ```sql
@@ -42,7 +42,7 @@ SELECT pg_relation_filepath('degerlitablo');
 
 Bir **veritabanı kümesi**'nin bir `base` dizini vardır. 
 
-[fiziksel yapı](http://www.interdb.jp/pg/img/fig-1-02.png)
+[fiziksel yapı](https://www.interdb.jp/pg/pgsql01/02.html)
 
 |dosyalar|açıklamalar|
 |--- |--- |

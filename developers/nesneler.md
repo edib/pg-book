@@ -69,22 +69,19 @@ CREATE TABLE
 ```
 *Öğrenciler tablosu oluşturulurken bölümler tablosu referans alınmıştır. Girilen bölüm bilgisibölümler tablosunda yok ise veritabanı kabul etmeyecektir.*
 
+```sql
+CREATE TABLE public.tb_ogrenci(
+  id SERIAL NOT NULL,
+  ogrenci_no BIGINT NOT NULL UNIQUE CHECK (ogrenci_no> 0),
+  adi VARCHAR(50) NOT NULL,
+  soyadi VARCHAR(50) NOT NULL,
+  tc_kimlik_no BIGINT NOT NULL UNIQUE CHECK (tc_kimlik_no> 10000000000),
+  bolum_id INTEGER NULL,
+  PRIMARY KEY(id),
+  CONSTRAINT tb_ogrenci_fk FOREIGN KEY (bolum_id) REFERENCES public.tb_bolumler(id) ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE) ;
+
 ```
-postgres=# CREATE TABLE public.tb_ogrenci(
-id SERIAL NOT NULL,
-ogrenci_no BIGINT NOT NULL UNIQUE CHECK (ogrenci_no> 0),
-adi VARCHAR(50) NOT NULL,
-soyadi VARCHAR(50) NOT NULL,
-tc_kimlik_no BIGINT NOT NULL UNIQUE CHECK (tc_kimlik_no> 10000000000),
-bolum_id INTEGER NULL,
-PRIMARY KEY(id),
-CONSTRAINT tb_ogrenci_fk FOREIGN KEY (bolum_id)
-REFERENCES public.tb_bolumler(id)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE) ;
-CREATE TABLE
-```
+
 ## Table Constraints ( Tablo Kısıtlamaları )
 
 * Tablo kısıtlamaları, bir sütuna değil de tüm tabloya uygulanması dışında sütun kısıtlamalarına benzer.
@@ -100,16 +97,15 @@ CREATE TABLE
 
 **IF NOT EXISTS** kullanımı:
 
-```
-postgres=# CREATE TABLE IF NOT EXISTS public.tb_ogrenci(
-id SERIAL NOT NULL,
-ogrenci_no BIGINT NOT NULL UNIQUE CHECK (ogrenci_no> 0),
-adi VARCHAR(50) NOT NULL,
-soyadi VARCHAR(50) NOT NULL,
-tc_kimlik_no BIGINT NOT NULL UNIQUE CHECK (tc_kimlik_no > 10000000000),
-bolum_id INTEGER NULL,
-PRIMARY KEY(id));
-CREATE TABLE
+```sql
+CREATE TABLE IF NOT EXISTS tb_ogrenci(
+  id SERIAL NOT NULL,
+  ogrenci_no BIGINT NOT NULL UNIQUE CHECK (ogrenci_no> 0),
+  adi VARCHAR(50) NOT NULL,
+  soyadi VARCHAR(50) NOT NULL,
+  tc_kimlik_no BIGINT NOT NULL UNIQUE CHECK (tc_kimlik_no > 10000000000),
+  bolum_id INTEGER NULL,
+  PRIMARY KEY(id));
 ```
 **LIKE** ile öğrenci tablosunu kopyalayalım.
 ```

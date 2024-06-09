@@ -201,12 +201,6 @@ WHERE attributes->>'brand' = 'BrandX'
 AND attributes->>'processor' = 'Intel i7';
 ```
 
-### İndeks Kullanımının Avantajları
 
-- **Sorgu Performansı**: İndeksler, büyük veri kümeleri üzerinde belirli arama işlemlerini önemli ölçüde hızlandırır.
-- **Esneklik**: JSONB verileri üzerinde belirli anahtarlara veya veri yapılarına göre özelleştirilmiş indeksler oluşturabilirsiniz.
-- **Veri Yönetimi**: İndeksler, yarı yapılandırılmış veriler üzerinde etkili bir şekilde çalışmanıza ve bu verilerle daha karmaşık sorgular yapmanıza olanak tanır.
+https://tubitak-bilgem-yte.github.io/pg-gelistirici/docs/03-ozellikler/json/
 
-### Sonuç
-
-JSONB verilerini indekslemek, PostgreSQL'de büyük ve karmaşık JSON verileri üzerinde çalışırken performansı artırmak için çok güçlü bir yöntemdir. GIN indeksleri genel içerik aramaları için mükemmeldir, B-Tree indeksleri ise belirli JSON anahtarlarına göre sıralı erişimi hızlandırır. İhtiyacınıza göre bu indekslerden birini veya bir kombinasyonunu kullanarak veri erişimini optimize edebilirsiniz.

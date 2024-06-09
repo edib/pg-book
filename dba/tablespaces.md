@@ -1,7 +1,9 @@
-# Yapısal İşlemler
+## `tablespace` işlemleri
 
+### [Tablespace yapılandırması](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/05-veritabani-yonetimi/tablespace/)
 
-### `tablespace` işlemleri
+### Temp Tablespace
+
 temp işlemlerini asıl dizinden ayırmak istersek, postgres linux kullanıcısında
 
 ```

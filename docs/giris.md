@@ -77,12 +77,15 @@
   * OLTP (Online Transaction Processing)
   * Web Uygulamaları
   * Veri Ambarı
-  * İnceleme & Değerlendirme
+  * Zaman Serileri
   * Gerçek zamanlı veri analizi
   * NoSQL
   * Gömülü
+  * https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47  
+  * https://www.paradedb.com/
+  * [Heryer Postgres](images/pgb-backup.png)
 
-# Hata Bildirme 
+# Hata Bildirme ve Destek 
   * Sorunu tanımlama
     * Nerede kartışaltın?
   * Ne raporlanacak
