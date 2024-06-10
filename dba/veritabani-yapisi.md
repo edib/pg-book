@@ -148,3 +148,4 @@ sampledb=# SELECT ctid, data FROM sampletbl WHERE ctid = '(0,1)';
 [yöntem](http://www.interdb.jp/pg/img/fig-1-06.png)
 
 
+bileşenleri

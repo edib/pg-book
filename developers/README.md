@@ -14,13 +14,16 @@
 
 3. **Basic PostgreSQL Architecture** [+](../dba/veritabani-yapisi.md)
    - PostgreSQL server components 
-      - [Sunucu bileşenleri](nesneler.md)
+      - [SQL Nesneleri](nesneler.md)
    - Database, schema, and tablespaces
       - [Veritabanı Yapısı](../dba/veritabani-yapisi.md)
       - [VT oluşturma](../dba/veritabani-yonetimi.md)
       - [tablespaces](../dba/tablespaces.md)
    - PostgreSQL processes and memory architecture
       - [İşlemci ve Bellek Mimarisi](../dba/bellek-islem-mimarisi.md)
+   - [Wal](../dba/wal.md)
+   - [vacuum](../dba/vacuum.md)
+   - [mvcc](../dba/mvcc.md)
 
 #### SQL Basics and PostgreSQL-specific SQL
 
@@ -56,8 +59,8 @@
    - Indexing strategies [+](Indexing.md)
 
 2. **Advanced Data Modeling**
-   - Inheritance and partitioning [+]()
-   - Data types and domain constraints
+   - Inheritance and partitioning [+](partitioning.md)
+   - Data types and domain constraints [+](veri_tipleri.md)
    - Composite types and table constraints
 
 3. **Designing for Performance**

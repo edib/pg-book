@@ -24,7 +24,7 @@ log_disconnections = on
 log_lock_waits = on
 log_temp_files = 0
 
-# systemctl restart postgresql-9.6
+systemctl restart postgresql
 ```
 
 Derlenmiş binary’yi global bir yere taşıyıp Apache’yi başlatalım ve raporu günün loglarından yarattırıp web dizinine koyalım::
@@ -41,17 +41,17 @@ Derlenmiş binary’yi global bir yere taşıyıp Apache’yi başlatalım ve ra
 
 Öngereksinimler ve kurulum:
 
-```sql
-# yum install make gcc-c++ qt-devel
-$ git clone https://github.com/WoLpH/pg_query_analyser.git
-$ cd pg_query_analyser/
-$ qmake-qt4
-$ make && sudo make install
+```bash
+yum install make gcc-c++ qt-devel
+git clone https://github.com/WoLpH/pg_query_analyser.git
+cd pg_query_analyser/
+qmake-qt4
+make && sudo make install
 ```
 
 *postgresql.conf*’a pgbadger’daki gibi log ayarlarını ekleyelim, sadece prefix farklı:
 
-```sql
+```bash
 # vim /var/lib/pgsql/9.6/data/postgresql.conf
 log_line_prefix = '%t [%p]: [%l-1] host=%h,user=%u,db=%d,tx=%x,vtx=%v '
 
@@ -60,6 +60,6 @@ log_line_prefix = '%t [%p]: [%l-1] host=%h,user=%u,db=%d,tx=%x,vtx=%v '
 
 Yine PgBagder’da olduğu gibi Apache dizinine log analizi raporunu çıkartıyoruz:
 
-```sql
-# ./pg_query_analyser -i /var/lib/pgsql/9.6/data/pg_log/postgresql-Mon.log -o /var/www/html/report.html
+```bash
+./pg_query_analyser -i /var/lib/pgsql/9.6/data/pg_log/postgresql-Mon.log -o /var/www/html/report.html
 ```

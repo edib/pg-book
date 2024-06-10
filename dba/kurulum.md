@@ -3,21 +3,14 @@
 Eğer kişisel bilgisayarımızda bir sanal makina oluşturarak postgres kurulumu yapmak istiyorsak en kısa yol vagrant iledir. [Vagrant kurulumu](../vagrant.md) 
 ## Gereksinimler
 
-```
-gpgyi okumak için
-apt update && apt install -y gnupg2
-
-# ekrana basan dil mesajı için
-
-locale-gen tr_TR.UTF-8
-localedef -i tr_TR -f UTF-8 tr_TR.UTF-8
-
+```sql
+create user your_username;
 
 CREATE DATABASE mydatabase
     WITH OWNER = your_username
          ENCODING = 'UTF8'
-         LC_COLLATE = 'tr_TR.UTF-8'
-         LC_CTYPE = 'tr_TR.UTF-8'
+         LC_COLLATE = 'tr-TR-x-icu'  -- ICU destekli Türkçe collation
+         LC_CTYPE = 'tr-TR-x-icu'    -- ICU destekli Türkçe karakter türü
          TEMPLATE = template0;
 
 ```
@@ -72,11 +65,6 @@ Binaries: /usr/pgsql-${version}/bin
 Data: /var/lib/pgsql/${version}/data
 
 ```
-
-### **`Cluster` yönetimi**
-* pg_ctl utility
-* init.d scripts / systemd services
-
 
 ### Ayarlar nerede yapılır?
 
@@ -154,9 +142,6 @@ pg_ctlcluster
 Error: Usage: /usr/bin/pg_ctlcluster <version> <cluster> <action> [-- <pg_ctl options>]
 
 ```
-
-
-
 
 ### Kaynaklar
 * [Detay](https://tubitak-bilgem-yte.github.io/pg-yonetici/mydoc_postgresql_kurulum_ayarlanmasi.html)
