@@ -19,7 +19,7 @@ Tablodaki bir veriye işaret eder.
 
 
 #### Btree
-#### Btree
+#### BtreeRecursive queries
 * Cover INDEX
 * Multicolumn INDEX
   Kolonların sırası önemlidir.

@@ -14,7 +14,7 @@
 
 3. **Basic PostgreSQL Architecture** [+](../dba/veritabani-yapisi.md)
    - PostgreSQL server components 
-      - [Sunucu bileşenleri](../dba/nesneler.md)
+      - [Sunucu bileşenleri](nesneler.md)
    - Database, schema, and tablespaces
       - [Veritabanı Yapısı](../dba/veritabani-yapisi.md)
       - [VT oluşturma](../dba/veritabani-yonetimi.md)
@@ -46,7 +46,7 @@
 
 3. **Advanced SQL Techniques**
    - Recursive queries
-   - Upsert (INSERT ON CONFLICT)
+   - [Upsert (INSERT ON CONFLICT)](upsert.md)
    - Lateral joins
 
 #### Database Design and Modeling

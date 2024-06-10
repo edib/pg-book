@@ -9,7 +9,8 @@
 * Tablespace    : Veritabanındaki nesnelerin saklandığı fiziksel alandır.
 * View : Karmaşık sorguları basitleştirmek için kullanılmaktadır.
 * Function : Veritabanı içinde işlem yapmamızı sağlayan nesnelerdir.
-* operators: Sembol fonksiyonlar, özelleştirilebilir.
+* Procedure: Benzer ama sonuç döndürmez ve akış yönetilebilir.
+* Operators: Sembol fonksiyonlar, özelleştirilebilir.
 * Casts: bir veri tipini diğerine döndürür.
 * Sequence (Artan Sayı): Sequence nesneleri PostgreSQL'de otomatik olarak artan sayıları takip etmek için kullanılan veritabanı nesnesidir.
 * Extensions: Extra özellikler
@@ -27,28 +28,30 @@
 **CREATE TABLE** ifadesi ile tablo oluşturulur.
 
 En basit kullanım şekli:
-```
+
+```sql
 CREATE TABLE tablo_adi(
     kolon_adi1 veri_tipi,
     kolon_adi2 veri_tipi );
 ```
 
-```
+```sql
 CREATE TABLE tb_il (id Integer, il_adi Varchar(50));
 ```
+
 Oluşturduğumuz bu tabloya hiçbir kontrol eklemedik.
 
+```sql
+DROP TABLE tb_il ;
 ```
-postgres=# DROP TABLE tb_il ;
-DROP TABLE
-```
-```
-postgres=# CREATE TABLE public.tb_il (
+
+```sql
+CREATE TABLE public.tb_il (
 id serial NOT NULL UNIQUE,
 id_adi varchar(50) NOT NULL UNIQUE );
-CREATE TABLE
+
 ```
-## Column Constraints
+## Alan Sınırlandırmaları
 
 * **NOT NULL** : Sütunun değeri boş "NULL" olamaz.
 * **NULL**  : Sütun değeri boş "NULL" olabilir. Varsayılan değeridir. Değer verilmezse bu değer işletilir.
@@ -58,19 +61,27 @@ CREATE TABLE
 * **PRIMARYKEY** : Sütun için "NOT NULL" ve "UNIQUE" kısıtlamalarını beraber işletir.
 * **REFERANSLAR** : Sütunun içerdiği verinin başka bir tabloda varlığı kontrol edilir.
 
+* [Sınırlandırmalar](constraints.md)
+
 Öncelikle referans tablo olabilmesi için bölümler tablosunu oluşturuyoruz. Tablomuzu *public* scheması içinde oluşturalım.
 
+```sql
+CREATE TABLE tb_bolumler(
+  id SERIAL NOT NULL,
+  bolum_adi Varchar(50) NOT NULL UNIQUE,
+  PRIMARY KEY(id));
+
+INSERT INTO tb_bolumler (bolum_adi) VALUES ('Bilgisayar Mühendisliği');
+INSERT INTO tb_bolumler (bolum_adi) VALUES ('Elektrik-Elektronik Mühendisliği');
+INSERT INTO tb_bolumler (bolum_adi) VALUES ('Makine Mühendisliği');
+INSERT INTO tb_bolumler (bolum_adi) VALUES ('İnşaat Mühendisliği');
+INSERT INTO tb_bolumler (bolum_adi) VALUES ('Endüstri Mühendisliği');  
 ```
-postgres=# CREATE TABLE public.tb_bolumler(
-id SERIAL NOT NULL,
-bolum_adi Varchar(50) NOT NULL UNIQUE,
-PRIMARY KEY(id));
-CREATE TABLE
-```
-*Öğrenciler tablosu oluşturulurken bölümler tablosu referans alınmıştır. Girilen bölüm bilgisibölümler tablosunda yok ise veritabanı kabul etmeyecektir.*
+
+* Öğrenciler tablosu oluşturulurken bölümler tablosu referans alınmıştır. Girilen bölüm bilgisibölümler tablosunda yok ise veritabanı kabul etmeyecektir.
 
 ```sql
-CREATE TABLE public.tb_ogrenci(
+CREATE TABLE tb_ogrenci(
   id SERIAL NOT NULL,
   ogrenci_no BIGINT NOT NULL UNIQUE CHECK (ogrenci_no> 0),
   adi VARCHAR(50) NOT NULL,
@@ -79,6 +90,16 @@ CREATE TABLE public.tb_ogrenci(
   bolum_id INTEGER NULL,
   PRIMARY KEY(id),
   CONSTRAINT tb_ogrenci_fk FOREIGN KEY (bolum_id) REFERENCES public.tb_bolumler(id) ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE) ;
+
+INSERT INTO tb_ogrenci (ogrenci_no, adi, soyadi, tc_kimlik_no, bolum_id) VALUES (123456789, 'John', 'Doe', 12345678901, 1);
+
+INSERT INTO tb_ogrenci (ogrenci_no, adi, soyadi, tc_kimlik_no, bolum_id) VALUES (987654321, 'Jane', 'Smith', 98765432109, 2);
+
+INSERT INTO tb_ogrenci (ogrenci_no, adi, soyadi, tc_kimlik_no, bolum_id) VALUES (456789123, 'Michael', 'Johnson', 45678912304, 3);
+
+INSERT INTO tb_ogrenci (ogrenci_no, adi, soyadi, tc_kimlik_no, bolum_id) VALUES (789123456, 'Emily', 'Davis', 78912345607, 4);
+
+INSERT INTO tb_ogrenci (ogrenci_no, adi, soyadi, tc_kimlik_no, bolum_id) VALUES (321654987, 'David', 'Wilson', 32165498703, 5);
 
 ```
 
@@ -107,26 +128,30 @@ CREATE TABLE IF NOT EXISTS tb_ogrenci(
   bolum_id INTEGER NULL,
   PRIMARY KEY(id));
 ```
-**LIKE** ile öğrenci tablosunu kopyalayalım.
-```
-postgres=# CREATE TABLE public.tb_ogrenci_kopya ( LIKE public.tb_ogrenci INCLUDING ALL );
-CREATE TABLE
-```
-*Kopyaladığımız tablonun içini doldurmak için :*
 
+**LIKE** ile öğrenci tablosunu kopyalayalım.
+* Altta daha geniş örnekler var.
+
+```sql
+CREATE TABLE public.tb_ogrenci_kopya ( LIKE public.tb_ogrenci INCLUDING ALL );
 ```
-postgres=# INSERT INTO public.tb_ogrenci_kopya SELECT * FROM public.tb_ogrenci;
+
+* *Kopyaladığımız tablonun içini doldurmak için :*
+
+```sql
+INSERT INTO public.tb_ogrenci_kopya SELECT * FROM public.tb_ogrenci;
 ```
 
 # TEMEL TABLO İŞLEMLERİ
 
 ## CREATE TABLE AS
+
 CREATE TABLE AS ifadesi, SQL sonuç çıktısında belirtilen isimde bir tabloya çevirir. Kolon isimlerini ve veri tiplerini SQL'den gelen kolon isimleri ve tiplerine göre belirler.
 
 Örneğimizde bölümü bilgisayar olan öğrencileri bir tabloda toplayalım :
 
-```
-postgres=# CREATE TABLE public.tb_ogrenci_bilgisayar AS
+```sql
+CREATE TABLE tb_ogrenci_bilgisayar AS
 SELECT og.id,
 og.ogrenci_no,
 og.adi,
@@ -135,18 +160,19 @@ og.tc_kimlik_no,
 og.bolum_id
 FROM public.tb_ogrenci og
 LEFT JOIN public.tb_bolumler b on b.id = og.bolum_id
-WHERE b.bolum_adi = 'Bilgisayar' ;
+WHERE b.bolum_adi = 'Bilgisayar';
 ```
 
 * Oluşturduğumuz tablonun içine bakarsak sadece bilgisayar bölümü öğrencilerinin olduğunu görürüz:
 
-```
+```sql
 SELECT * FROM public.tb_ogrenci_bilgisayar;
 ```
+
 * Daha kısa yazmak istersek;
 
-```
-postgres=# CREATE TABLE public.tb_ogrenci_bilgisayar AS
+```sql
+CREATE TABLE public.tb_ogrenci_bilgisayar AS
 SELECT og.*
 FROM public.tb_ogrenci og
 LEFT JOIN public.tb_bolumler b on b.id = og.bolum_id
@@ -161,62 +187,81 @@ WHERE b.bolum_adi = 'Bilgisayar';
 **Kullanımı:**
 
 * Bir tabloya yeni bir kolon eklemek için **ALTER TABLE ADD COLUMN**  ifadesi kullanılır:
+  ```sql
+ALTER TABLE public.tb_ogrenci ADD COLUMN kayit_tarihi DATE;
   ```
-  postgres=# ALTER TABLE public.tb_ogrenci ADD COLUMN kayit_tarihi DATE;
-  ```
+
 * Var olan bir kolonu kaldırmak için **ALTER TABLE DROP COLUMN** ifadesi kullanılır:
+  
+```sql
+ALTER TABLE public.tb_ogrenci DROP COLUMN kayit_tarihi ;
   ```
-    postgres=# ALTER TABLE public.tb_ogrenci DROP COLUMN kayit_tarihi ;
-    ALTER TABLE
-  ```
+
 * Var olan bir kolonu yeniden adlandırmak için **ALTER TABLE RENAME COLUMN TO** ifadesi kullanılır.
-    ```
-    postgres=# ALTER TABLE public.tb_ogrenci RENAME COLUMN kayit_tarihi TO kayit_olma_tarihi;
-    ALTER TABLE
-    ```
+
+```sql
+ALTER TABLE public.tb_ogrenci RENAME COLUMN kayit_tarihi TO kayit_olma_tarihi;
+```
+
 * Kolonun varsayılan değerini değiştirmek için **ALTER TABLE ALTER COLUMN SET DEFAULT** ifadesi kullanılır.
-  ```
-  postgres=# ALTER TABLE public.tb_ogrenci ALTER COLUMN  kayit_olma_tarihi SET DEFAULT 'now()';
-  ALTER TABLE
-  ```
+
+```sql
+ALTER TABLE public.tb_ogrenci ALTER COLUMN  kayit_olma_tarihi SET DEFAULT 'now()';
+
+```
+
 * Kolonun varsayılan değerini silmek için **DROP DEFAULT** ifadesi kullanılır:
-  ```
-  postgres=# ALTER TABLE public.tb_ogrenci ALTER COLUMN kayit_olma_tarihi DROP DEFAULT ;
-  ```
+
+```sql
+ALTER TABLE public.tb_ogrenci ALTER COLUMN kayit_olma_tarihi DROP DEFAULT ;
+```
+
 * Tablonun herhangi bir kolonunda **NOT NULL** kısıtlaması eklemek veya kaldırmak için **ALTER TABLE ALTER COLUMN** ifadesi kullanılır.
-  ```
-  postgres=# ALTER TABLE public.tb_ogrenci ALTER COLUMN kayit_olma_tarihi SET NOT NULL ;
-  ```
-  ***İPUCU*** :  **NOT NULL** eklenmek istenen kolon boş veriler içeriyorsa, veritabanı size hata verecek **NOT NULL** şartını eklemeyecektir. Öncesinde bu alanlara değer
-  girmeniz gerekir.
+
+```sql
+postgres=# ALTER TABLE public.tb_ogrenci ALTER COLUMN kayit_olma_tarihi SET NOT NULL ;
+```
+
+***İPUCU*** :  **NOT NULL** eklenmek istenen kolon boş veriler içeriyorsa, veritabanı size hata verecek **NOT NULL** şartını eklemeyecektir. Öncesinde bu alanlara değer girmeniz gerekir.
+
 * Tabloya bir **CHECK** eklemek için **ALTER TABLE ADD CHECK** ifadesi kullanılır:
-  ```
-  postgres=# ALTER TABLE public.tb_ogrenci ADD CHECK (ogrenci_no > 100);
-  ```
+
+```sql
+ALTER TABLE public.tb_ogrenci ADD CHECK (ogrenci_no > 100);
+```
+
 * Bir sınırlama eklemek **ALTER TABLE ADD CONSTRAINT** :
-  ```
-  postgres=# ALTER TABLE public.tb_ogrenci ADD CHECK (ogrenci_no > 100);
-  ```
+
+```sql
+ALTER TABLE public.tb_ogrenci ADD CHECK (ogrenci_no > 100);
+```
+
 * Tabloda **FOREIGN KEY** bir koşul ekleyeceksek;
-    ```
-    postgres=# ALTER TABLE public.tb_ogrenci ADD CONSTRAINT distfk FOREIGN KEY (bolum_id) REFERENCES public.tb_bolumler(id);
-    ```
+
+```sql
+postgres=# ALTER TABLE public.tb_ogrenci ADD CONSTRAINT distfk FOREIGN KEY (bolum_id) REFERENCES public.tb_bolumler(id);
+```
+
 * Tablomuza **UNIQUE** bir koşul ekleyeceksek;
-    ```
-    postgres=# ALTER TABLE public.tb_ogrenci ADD CONSTRAINT ogrenci_no_tekil UNIQUE (ogrenci_no) ;
-    ```
+
+```sql
+ALTER TABLE public.tb_ogrenci ADD CONSTRAINT ogrenci_no_tekil UNIQUE (ogrenci_no) ;
+```
+
 * Var olan bir tablonun ismini değiştirmek isterseniz, **ALTER TABLE RENAME TO** ifadesi kullanılır:
-  ```
-  postgres=# ALTER TABLE public.tb_ogrenci RENAME TO tbnew_ogrenci;
-  ```
+
+```sql
+ALTER TABLE public.tb_ogrenci RENAME TO tbnew_ogrenci;
+```
 
 ## TABLO SİLME
 
 Tablo silmek için **DROP TABLE** ifadesi kullanılır.
 
+```sql
+DROP TABLE tb_ogrenci;
 ```
-postgres=# DROP TABLE tb_ogrenci;
-```
+
 * Bu işlem sonunda tablo verisi dosya düzeyinde silinecektir. Tabloya bağlı olan tüm Index, Rule, Trigger ve Constraint'ler de silinecektir.
 * Silinmek istenen tablonun kullanıldığı bir View ve **FOREIGN KEY** ile bağlı başka bir tablo var ise, silmek istediğinizde hata alırsınız.
 
@@ -234,10 +279,10 @@ postgres=# DROP TABLE tb_ogrenci;
 
 *Öğrenci tablosundaki tüm verileri silelim:*
 
+```sql
+TRUNCATE TABLE tb_ogrenci;
 ```
-postgres=# TRUNCATE TABLE tb_ogrenci;
-TRUNCATE TABLE
-```
+
 ## TEMP TABLO
 
 * Bazen hesaplama yapmak veya süreç içinde daha rahat veriye ulaşmak için geçici olarak verileri saklamamız gereken durumlar olabilir. Bu durumlarda **TEMP TABLE** nesnesi kullanılabilir.
@@ -438,6 +483,107 @@ FOREIGN KEY (ogrenci_id) REFERENCES tb_ogrenci (id) ) ;
 ```
 
 * **FOREIGN KEY (ogrenci_id) REFERENCES tb_ogrenci (id)** ifadesi ile tb_ogrenci_notlar tablosunun ogrenci_id sütununu referans göstererek tb_ogrenci tablosunun ID sütununa bağladık.
+
+
+### CREATE TABLE ... (LIKE ...)
+
+####  Kaynak Tablo
+
+Öncelikle, üzerinde kısıtlamalar, dizinler, varsayılan değerler ve yorumlar tanımlanmış örnek bir tablo oluşturalım:
+
+```sql
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    salary NUMERIC(10, 2) DEFAULT 0.00 CHECK (salary >= 0),
+    department_id INT REFERENCES departments(department_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT email_not_null CHECK (email IS NOT NULL)
+);
+```
+
+Bu tablo aşağıdaki özelliklere sahiptir:
+- `employee_id`: Birincil anahtar olarak kullanılır, `SERIAL` veri tipi otomatik olarak artan bir tamsayıdır.
+- `first_name` ve `last_name`: Boş bırakılamaz.
+- `email`: Benzersiz olmalıdır ve ayrıca `email_not_null` kısıtlaması ile boş olamaz.
+- `salary`: Varsayılan olarak 0.00 değerine sahiptir ve 0'dan küçük olamaz.
+- `department_id`: `departments` tablosundaki `department_id` sütununa yabancı anahtar (foreign key) olarak referans verir.
+- `created_at`: Varsayılan olarak mevcut zaman damgasını alır.
+
+### Yeni Tablonun Oluşturulması
+
+Bu kaynak tabloyu temel alarak farklı `CREATE TABLE ... (LIKE ...)` örneklerini görelim.
+
+#### 1. Temel Yapı Kopyalama
+
+Sadece sütun yapılarını ve veri türlerini kopyalamak için:
+
+```sql
+CREATE TABLE employees_basic (LIKE employees);
+```
+
+**Sonuç**: `employees_basic` tablosu, `employees` tablosundaki sütunları ve veri türlerini kopyalar, ancak kısıtlamalar, dizinler veya varsayılan değerler dahil edilmez.
+
+#### 2. Tüm Özellikleri Kopyalama
+
+Tüm sütun yapıları, veri türleri, kısıtlamalar, varsayılan değerler ve dizinleri kopyalamak için:
+
+```sql
+CREATE TABLE employees_full (LIKE employees INCLUDING ALL);
+```
+
+**Sonuç**: `employees_full` tablosu, `employees` tablosunun tüm yapısal özelliklerini (kısıtlamalar, varsayılan değerler ve dizinler dahil) kopyalar. Ancak, kısıtlamaların ve dizinlerin isimleri yeni tabloda farklı olacaktır.
+
+#### 3. Varsayılan Değerler ve Kısıtlamalarla Kopyalama
+
+Sütun yapılarını, veri türlerini, varsayılan değerleri ve kısıtlamaları kopyalamak için:
+
+```sql
+CREATE TABLE employees_with_defaults_and_constraints (LIKE employees INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+```
+
+**Sonuç**: `employees_with_defaults_and_constraints` tablosu, `employees` tablosunun sütun yapılarını, veri türlerini, varsayılan değerlerini ve kısıtlamalarını kopyalar, ancak dizinler kopyalanmaz. Kısıtlamaların isimleri yeni tabloda farklı olacaktır.
+
+#### 4. Dizinler Hariç Tüm Özellikleri Kopyalama
+
+Sütun yapılarını, veri türlerini, varsayılan değerleri, kısıtlamaları, ve yorumları kopyalayıp, dizinleri hariç tutmak için:
+
+```sql
+CREATE TABLE employees_no_indexes (LIKE employees INCLUDING DEFAULTS INCLUDING CONSTRAINTS INCLUDING COMMENTS EXCLUDING INDEXES);
+```
+
+**Sonuç**: `employees_no_indexes` tablosu, `employees` tablosunun sütun yapılarını, veri türlerini, varsayılan değerlerini, kısıtlamalarını ve yorumlarını kopyalar, ancak dizinleri kopyalamaz. Kısıtlamaların isimleri yeni tabloda farklı olacaktır.
+
+#### 5. Yorumlar Dahil Tüm Özellikleri Kopyalama
+
+Sütun yapılarını, veri türlerini, varsayılan değerleri, kısıtlamaları, dizinleri ve yorumları kopyalamak için:
+
+```sql
+CREATE TABLE employees_with_comments (LIKE employees INCLUDING DEFAULTS INCLUDING CONSTRAINTS INCLUDING INDEXES INCLUDING COMMENTS);
+```
+
+**Sonuç**: `employees_with_comments` tablosu, `employees` tablosunun tüm yapısal özelliklerini (sütunlar, veri türleri, varsayılan değerler, kısıtlamalar, dizinler ve yorumlar) kopyalar. Ancak, kısıtlamaların ve dizinlerin isimleri yeni tabloda farklı olacaktır.
+
+### Örneklerin Özeti
+
+| Yeni Tablo Adı                            | Kopyalanan Özellikler                                 |
+|-------------------------------------------|-------------------------------------------------------|
+| `employees_basic`                         | Sütunlar ve veri türleri                              |
+| `employees_full`                          | Sütunlar, veri türleri, kısıtlamalar, varsayılan değerler, dizinler |
+| `employees_with_defaults_and_constraints` | Sütunlar, veri türleri, varsayılan değerler, kısıtlamalar |
+| `employees_no_indexes`                    | Sütunlar, veri türleri, varsayılan değerler, kısıtlamalar, yorumlar |
+| `employees_with_comments`                 | Sütunlar, veri türleri, varsayılan değerler, kısıtlamalar, dizinler, yorumlar |
+
+### Kısıtlamaların ve Dizinlerin İsimleri
+
+Yeni tablolarda kısıtlamaların ve dizinlerin isimleri otomatik olarak yeniden oluşturulur ve benzersiz hale getirilir. Örneğin, `employees` tablosunda `PRIMARY KEY` kısıtlaması `employees_pkey` olabilirken, `employees_full` tablosunda bu kısıtlamanın ismi `employees_full_pkey` olabilir. Bu, PostgreSQL'in her kısıtlamanın ve dizinin isimlerinin benzersiz olmasını sağlama yöntemidir.
+
+Bu örnekler, `CREATE TABLE ... (LIKE ...)` ifadesini kullanarak PostgreSQL'de nasıl yeni tablolar oluşturabileceğinizi ve hangi özelliklerin kopyalanabileceğini göstermektedir.
+
+
+
 
 
 # SCHEMA KAVRAMI
