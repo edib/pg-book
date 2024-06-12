@@ -33,20 +33,21 @@ CREATE TABLE musteri (
     musteri_id SERIAL PRIMARY KEY,
     ad VARCHAR(100),
     soyad VARCHAR(100),
-    dogum_tarihi DATE
+    dogum_tarihi DATE,
+    aktif bit null
 );
-
 
 -- Rastgele adlar ve soyadlar oluşturmak için örnek isimler
 WITH generated_data AS (
     SELECT 
         generate_series('1990-01-01'::date, '2001-12-31'::date, '1 day') AS dogum_tarihi,
         (ARRAY['Ahmet', 'Mehmet', 'Ayşe', 'Fatma', 'Ali', 'Veli', 'Zeynep', 'Can'])[floor(random() * 8 + 1)] AS ad,
-        (ARRAY['Yılmaz', 'Kara', 'Demir', 'Çelik', 'Arslan', 'Aydın', 'Polat', 'Korkmaz'])[floor(random() * 8 + 1)] AS soyad
+        (ARRAY['Yılmaz', 'Kara', 'Demir', 'Çelik', 'Arslan', 'Aydın', 'Polat', 'Korkmaz'])[floor(random() * 8 + 1)] AS soyad, 
+        (ARRAY['0','1'])[floor(random() * 2 + 1)]::bit AS aktif
 )
 -- Veriyi tabloya ekleme
-INSERT INTO musteri (ad, soyad, dogum_tarihi)
-SELECT ad, soyad, dogum_tarihi
+INSERT INTO musteri (ad, soyad, dogum_tarihi, aktif)
+SELECT ad, soyad, dogum_tarihi, aktif
 FROM generated_data;
 
 ```
