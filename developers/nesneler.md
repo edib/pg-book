@@ -702,51 +702,6 @@ postgres=# ALTER TABLE tb_ogrenci ADD COLUMN no SERIAL;
     DROP SEQUENCE [IF EXISTS] sequence_adi [, ... ] [CASCADE | RESTRICT]
 ```
 
-# INDEKSLER
-
-* İndeksler, veritabanı performansını arttırmak için kullanılan önemli nesnelerdendir.İndeks olan bir alanda arama yapıldığı zaman indeksler, aramanın çok daha hızlı sonuçlanmasını ve istenilen bilgiye ulaşılmasını sağlar.
-* Gereksiz indeks kullanımı veritabanı performansını olumsuz etkiler. Ayrıca indeksler fiziksel yer kapladıkları için gereksiz indekslerin bir de depolama maliyeti olacaktır.
-* Küçük tablolar, büyük parti **INSERT** ve **UPDATE** olan tablolar ve çok fazla NULL içeren kolonların olduğu durumlarda indeks oluşturmamak daha iyi olacaktır.
-
-
-## İndeks Oluşturmak
-
-Indeks **CREATE INDEX** komutu ile oluşturulur.
-
-###Parametreleri :
-
-**UNIQUE** : Var olan tablo için oluşturuluyorsa önce verilerin tekilliğini kontrol eder. Verinin benzersiz olmasını sağlar.
-**CONCURRENTLY** : Fazla veri içeren tabloya index eklenmek istenildiğinde tablo index oluşumu sırasında kilitlenir ve işlem yapılamaz. Bunu önlemek için kullanılır.
-**USING** (metod) : indeksin hangi methodu kullanacağı burada belirtilir.btree, hash, gist, spgist ve brin metotlarından biri seçilebilir.
-
-**CREATE INDEX** söz dizisinin en basit hali :
-```
-CREATE INDEX index_adi ON tablo_adi (kolon_ adi)
-```
-*Bu şekilde oluşturulan indexin B-tree olur varsayılan olarak*
-
-* Çoklu kolonlu index oluşturma :
-  ```
-  CREATE INDEX index_adi ON tablo_adi USING btree (kolon_adi1,kolon_adi2,kolon_adi3);
-  ```
-* Kısmi İndex (Partial Index) : Bir tablonun içindeki, belirli şartlara uyan verilerin indexlenmesi işlemidir. Bu yöntemde performans ve disk işlemlerinde size avantaj sağlayacaktır.
-*Elinizde milyon satırlık müşteri bilgisi bulunan bir tablo düşünün. Bu tablo içinde sadece 1990 - 2001 yılları arasında doğan müşteriler için kampanya planlaması yaptığınızı varsayalım  
-
-```
-CREATE INDEX index_adi ON tb_müsteri (dogum_tarihi) WHERE dogum_tarihi between '1990-01-01' and '2001-12-31';
-```
-
-* Tekil INDEX (UNIQUE INDEX) : Bu tür indexler sadece performans için değil, aynı zamanda veri bütünlüğünü sağlamak içinde kullanılır. Verilen kolon veya kolonların içerdiği verilerin tablo içinde benzersiz olarak tutulmasını sağlar.
-  ```
-  CREATE UNIQUEINDEX index_adi ON tablo_adi (kolon_adi);
-  ```
-* Dahili Index ( Implicit Index ) : Birincil anahtar (primary key) ve benzersiz (unique) kısıtlamaları için indexler otomatik oluşturulur.
-* Zamanlı Index (Concurrent Index): Index oluştururken, index oluşacak oluşacak tabloda bir lock. Bu durumda tablo üzerinde işlem yapılamaz. Bu durumlarda indexin tablo üzerinde bir lock oluşturmadan yapılabilmesi için **CONCURRENT** ifadesi kullanılır.
-  ```
-  CREATE INDEX CONCURRENTLY index_adi ON tablo_adi (kolon_adi,kolon_adi2)
-  ```
-* Index silmek için **DROP INDEX** ifadesi kullanılır.
-
 # VIEW'LAR
 
 * İçerisinde SQL sorgusu saklayan bir veritabanı nesnesidir. Varsayılan olarak nesne içerisinde veri saklamazlar.

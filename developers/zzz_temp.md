@@ -1,26 +1,6 @@
 # PostgreSQL Developer Eğitimi
 
-## PostgreSQL Tarihçesi ve Yapısı
 
-* güçlü, açık kaynaklı nesne ilişkisel veritabanı sistemi.
-* https://db-engines.com/en/ranking_trend
-* https://www.postgresql.org/docs/current/intro-whatis.html
-* https://github.com/postgres/postgres
-* https://www.postgresql.org/community/user-groups/
-* https://www.postgresql.org/about/events/
-* https://wiki.postgresql.org/wiki/PostgreSQL_derived_databases
-* https://www.postgresql.org/support/versioning/
-
-### Destek
-
-* Mail listeleri http://www.postgresql.org/list/ 
-* pgsql-tr-genel@postgresql.org 
-* http://dba.stackexchange.com/questions/tagged/postgresql 
-* http://postgresql.org
-* https://www.postgresql.org/docs/current/static/index.html
-* http://www.postgresqltutorial.com/
-* Slack - postgresqltr.slack.com 
-* Kurumsal Destek
 
 ### Özellikleri
 
