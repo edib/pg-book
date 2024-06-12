@@ -456,3 +456,18 @@ Bu iki join yöntemi, farklı durumlar için optimize edilmiş birleşim stratej
 
 ### auto_explain
 https://scalegrid.io/blog/introduction-to-auto-explain-postgres/
+
+```sql
+
+alter system set session_preload_libraries='auto_explain';
+
+load 'auto_explain'
+
+set auto_explain.log_analyze = true
+
+set auto_explain.log_buffers = true
+
+set auto_explain.log_format = JSON
+set auto_explain.log_min_duration = 0
+
+```
