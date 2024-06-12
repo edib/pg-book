@@ -222,3 +222,8 @@ GROUP BY
 HAVING
    SUM (amount) > 100;
 ```
+
+### başka pagila sorguları
+
+https://github.com/Jkremr/pagila-queries
+https://github.com/shaifalisingh/Pagila-Database/blob/master/Queries.sql

@@ -89,7 +89,7 @@ Dört ayrı sonuç kümesi yerine tüm gruplama kümeleri için birleştiriliş 
 
 UNION ALL içinde geçen sorguların sütun sayılarının eşit olması gerektiğinden bazı sorgularda aşağıdaki gibi uygun yerlerde NULL sütun eklemek gerekiyor.
 
-```
+```sql
 SELECT dil, seviye, COUNT (ogrenci_no)
 FROM
     kurs_kayit
@@ -120,7 +120,7 @@ Bu noktada GROUP BY cümleciğinin alt cümleciği olarak GROUPING SETS (gruplam
 
 GROUPING SETS aynı sorguda birden çok gruplama kümesi tanımlanmasına imkan vermektedir. Genel yazımı aşağıdaki şekildedir:
 
-```
+```sql
 SELECT   
    sutun1,  
    sutun2,   
@@ -140,7 +140,7 @@ Bu yazımda 4 adet gruplama kümesi bulunmaktadır: (sutun1, sutun2), (sutun1), 
 
 Örnek tablomuzda bu yazımı uyguladığımızda aşağıdaki gibi bir sorgu elde ediyoruz:
 
-```
+```sql
 
 SELECT dil, seviye, COUNT (ogrenci_no)
 FROM
@@ -163,7 +163,7 @@ Daha kısa bir sorguyla öncekine denk bir sonuç kümesi elde ettik. Ayrıca bu
 ## CUBE
 CUBE,  GROUP BY'ın altında birden fazla sayıda gruplama kümesi oluşturmak için kullanılan bir alt cümleciktir. CUBE genel yazımı aşağıdaki şekildedir:
 
-```
+```sql
 
 SELECT   
    sutun1,  
@@ -178,7 +178,7 @@ GROUP BY
 
 CUBE ifadesi parantez içinde verilen (boyut) sütunlarının bütün gruplama kümesi kombinasyonlarını oluşturur. Yani aşağıdaki iki yazım birbirine denktir:
 
-```
+```sql
 CUBE(sutun1,sutun2,sutun3)
 
 
@@ -198,7 +198,7 @@ Eğer CUBE ifadesi içinde n sütun varsa 2n  gruplama seti kombinasyonu elde ed
 
 Aşağıdaki sorgu ile GROUPING SETS için kullandığımız kurs_kayit tablosu üzerinde CUBE kullanarak gruplama kümeleri oluşturuyoruz:
 
-```
+```sql
 SELECT dil, seviye, COUNT(ogrenci_no)
 FROM
    kurs_kayit
@@ -210,7 +210,7 @@ GROUP BY
 
 Bu sorgu ile de kısmi (partial) bir CUBE örneği göreceğiz:
 
-```
+```sql
 SELECT dil, seviye, COUNT(ogrenci_no)
 FROM
    kurs_kayit
@@ -228,7 +228,7 @@ GROUP BY ile birlikte kullanılabilecek çoklu gruplama kümeleri oluşturmayı 
 
 CUBE anlatılırken CUBE (sutun1, sutun2, sutun3) cümleciğinin denginin GROUPING SETS ile 8 ayrı satırda nasıl yazılabildiği gösterilmişti. Benzer şekilde aşağıdaki iki yazım da birbirine denktir:
 
-```
+```sql
 ROLLUP(sutun1,sutun2,sutun3)
 
 GROUPING SETS (
@@ -244,7 +244,7 @@ ROLLUP kullanımında belirtilen sütunlar arasında bir hiyerarşi olduğu vars
 
 Aşağıda PostgreSQL'de ROLLUP kullanımının genel yazımı görülmektedir:
 
-```
+```sql
 SELECT   
    sutun1,  
    sutun2,
@@ -257,7 +257,8 @@ GROUP BY
 
    ```
 Oluşturulacak alt toplamların sayısını azaltmak için aşağıdaki şekilde kısmi ROLLUP yazılması da mümkündür:
-```
+
+```sql
 SELECT   
    sutun1,  
    sutun2,
@@ -273,7 +274,7 @@ GROUP BY
 
 Aşağıdaki örnek sorgu ROLLUP alt cümleciği ile dillere göre öğrenci sayıları (alt toplam) ve tüm seviye ve diller için öğrenci sayılarını (toplam) vermektedir:
 
-```
+```sql
 SELECT dil, seviye, COUNT(ogrenci_no)
 FROM
    kurs_kayit
@@ -289,7 +290,7 @@ Sorgu çıktısında görüldüğü üzere 3. satırda İspanyolca 6. satırda J
 
 Sorguda ROLLUP kısmında dil ve seviyenin sıralamasını değiştirisek sonuç aşağıdaki gibi olacaktır:
 
-```
+```sql
 SELECT seviye, dil, COUNT(ogrenci_no)
 FROM
    kurs_kayit
@@ -304,7 +305,7 @@ Yukardaki örnekte ise hiyerarşi, seviye > dil şeklindedir.
 
 Aşağıda da kısmi ROLLUP için bir örnek verilmektedir:
 
-```
+```sql
 SELECT seviye, dil, COUNT(ogrenci_no)
 FROM
    kurs_kayit
@@ -317,14 +318,5 @@ ORDER BY
 
 ```
 
-* [Kaynak](http://www.postgresqltutorial.com/postgresql-rollup/)
-
-
-
-
-
-
-
-Kaynaklar
 
 http://www.postgresqltutorial.com/postgresql-rollup/

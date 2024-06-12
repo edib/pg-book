@@ -2,7 +2,7 @@
 
 ```sql
 
-CREATE TYPE FRUIT_QTY as (name text, qty int); [ CREATE TYPE FRUIT_QTY as (name text, qty int);]
+CREATE TYPE FRUIT_QTY as (name text, qty int);
  
 SELECT '("APPLE", 3)'::FRUIT_QTY;
  

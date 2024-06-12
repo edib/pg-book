@@ -1,4 +1,6 @@
-```
+# sütun güvenliği
+
+```sql
 CREATE TABLE passwd (
   user_name             text UNIQUE NOT NULL,
   pwhash                text,

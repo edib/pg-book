@@ -307,13 +307,125 @@ CREATE INDEX idx_brin ON foo USING BRIN (date); // Size of index = 48 KB
 
 ## GIN Index (Generalized Inverted indexes) [+](https://hashrocket.com/blog/posts/exploring-postgres-gin-index)
 
-* Kısmi eşleşmeler ve birden çok sütun içeriyorsa kullanımı anlamlıdır. (örneğin, ilk_adı, soyadi). "Lil Lillard" ve "Lilly Adams", "Lil" aramasında her iki kullanıcıyı da geri göndermelidir.
-* GIN composite değerlerin indexlenmesini ele alır, oluşturulması yavaştır.
 * Composite değerlere index eklemek istediğimizde B-tree kullanamayız. Örneğin elimizde isim,telefon numrası, TC kimlik no bilgilerini tutan JSONB veri tipinde bir kolon ve bu kolonun sadece TC kimlik no kısmına index eklemek istenildiğinde **GIN Index** kullanılması daha verimli olacaktır. tsvector, jsonb de kullanılır.
 
 
+```sql
+CREATE TABLE users (
+    first_name text,
+    last_name text
+);
+
+INSERT INTO users (first_name, last_name)
+SELECT 
+    md5(random()::text), 
+    md5(random()::text)
+FROM 
+    generate_series(1, 1000000) AS id;
+
+explain analyze SELECT count(*) FROM users where first_name ilike '%505%';        
+
+explain analyze SELECT count(*) FROM users where first_name ilike '%aeb%' or last_name ilike'%aeb%';
+
+CREATE INDEX users_search_idx ON users USING gin (first_name gin_trgm_ops, last_name gin_trgm_ops);
+
+-- boyutlarına bakalım
+-- tablo için
+SELECT
+    pg_size_pretty (pg_relation_size('users')) size;
+
+
+SELECT
+    pg_size_pretty (pg_relation_size('users_search_idx')) size;
+
+```
+
 ## GIST INDEX (Generalized Search Tree)
 
+### GIS
+
+```sql
+-- PostGIS uzantısını etkinleştirme
+CREATE EXTENSION postgis;
+
+-- Coğrafi veri içeren bir tablo oluşturma
+CREATE TABLE locations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    location GEOMETRY(Point, 4326)  -- WGS 84 koordinat sistemi
+);
+
+-- GiST indeksi oluşturma
+CREATE INDEX idx_locations_gist ON locations USING GIST (location);
+
+
+```
+
+### Tam Metin Arama
+
+```sql
+-- Aralık veri türlerini içeren bir tablo oluşturma
+CREATE TABLE events (
+    id SERIAL PRIMARY KEY,
+    event_name VARCHAR(100),
+    event_time TSRANGE  -- Time range
+);
+
+-- GiST indeksi oluşturma
+-- GiST indeksi oluşturma
+CREATE INDEX events_gist_idx ON events USING GIST (event_time);
+CREATE INDEX events_hash_idx ON events USING HASH (event_time); 
+CREATE INDEX events_btree_idx ON events (event_time); 
+
+-- boyutlarına bakalım
+SELECT
+    pg_size_pretty (pg_relation_size('idx_events_gist')) size;
+
+-- Örnek verileri ekleme
+INSERT INTO events (event_name, event_time) VALUES
+('Conference', '[2024-06-01 09:00, 2024-06-01 17:00)'),
+('Meeting', '[2024-06-02 10:00, 2024-06-02 12:00)');
+
+-- Belirli bir tarihte geçen tüm etkinlikleri bulma
+explain analyze SELECT * FROM events 
+WHERE event_time && '[2024-06-01 12:00, 2024-06-01 13:00)';
+
+```
+
+### Aralık Arama
+
+```sql
+-- Tam metin arama için bir tablo oluşturma
+CREATE TABLE documents (
+    id SERIAL PRIMARY KEY,
+    content TEXT
+);
+
+-- GiST indeksi oluşturma
+CREATE INDEX idx_documents_gist ON documents USING GIST (to_tsvector('english', content));
+
+-- Örnek verileri ekleme
+INSERT INTO documents (content) VALUES 
+('PostgreSQL supports full-text search through GiST indexes.'),
+('Generalized Search Trees are versatile and powerful.');
+
+-- Tam metin arama yapma
+SELECT * FROM documents 
+WHERE to_tsvector('english', content) @@ to_tsquery('english', 'powerful');
+
+
+```
+### ltree
+
+https://www.cybertec-postgresql.com/en/postgresql-ltree-vs-with-recursive/
+
+https://stackoverflow.com/questions/63363408/why-in-ltree-example-in-postgresql-documentation-the-author-has-created-two-ind
+
+## index sıralama
+
+```sql
+CREATE INDEX articles_published_at_index ON articles(published_at DESC NULLS LAST);
+```
 
 ## WHERE and WHAT?
 
@@ -322,6 +434,28 @@ CREATE INDEX idx_brin ON foo USING BRIN (date); // Size of index = 48 KB
 * **BRIN** : Büyük sıralı ve arasında ilişki olan datasetler. (correlation with physical disk)
 * **GIN**  : Documents ve Arrays.
 * **GIST** : Full text search.
+
+### **Kullanılmayan İndexler**:
+
+* Zamanla birden çok index oluşturur ve bunları silmeyi unutabilir, istediğimiz performansı alamayabilir veya daha iyi bir index kurabiliriz.
+* Bu gibi durumlarda hangi index'e ihtiyacımız olduğunu görebilmek için :
+
+```sql
+SELECT relname, indexrelname,idx_scan FROM pg_catalog.pg_stat_user_indexes;
+
+ relname | indexrelname  | idx_scan
+---------+---------------+----------
+ foo     | idx_btree_ios |        2
+ foo     | foo_idx       |        0
+ foo     | idx_btree     |        0
+ foo     | idx_part      |        4
+ foo     | idx_full      |        6
+(5 rows)
+
+```
+
+* Görüldüğü gibi hiç kullanılmayan indexlerimiz mevcut. Disk alanını verimli kullanmak için gereksiz indexleri silebiliriz.
+
 
 ## INDEX ONLY SCANS
 
@@ -350,27 +484,6 @@ EXPLAIN SELECT id, name FROM foo WHERE id > 100000 AND id < 100010;
    Index Cond: ((id > 100000) AND (id < 100010))
 (2 rows)
 ```
-
-### **Kullanılmayan İndexler**:
-
-* Zamanla birden çok index oluşturur ve bunları silmeyi unutabilir, istediğimiz performansı alamayabilir veya daha iyi bir index kurabiliriz.
-* Bu gibi durumlarda hangi index'e ihtiyacımız olduğunu görebilmek için :
-
-```sql
-SELECT relname, indexrelname,idx_scan FROM pg_catalog.pg_stat_user_indexes;
-
- relname | indexrelname  | idx_scan
----------+---------------+----------
- foo     | idx_btree_ios |        2
- foo     | foo_idx       |        0
- foo     | idx_btree     |        0
- foo     | idx_part      |        4
- foo     | idx_full      |        6
-(5 rows)
-
-```
-
-* Görüldüğü gibi hiç kullanılmayan indexlerimiz mevcut. Disk alanını verimli kullanmak için gereksiz indexleri silebiliriz.
 
 
 ## Analyze 
