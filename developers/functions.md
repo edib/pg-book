@@ -156,10 +156,85 @@ Bu sorgu, veritabanınızda tanımlı olan kullanıcı tanımlı prosedürleri l
   CALL insert_user('John Doe', 30);
   ```
 
-### Özet
+## Anonim Fonksiyonlar
 
-PostgreSQL'de, Fonksiyonlar genellikle bir değer döndürmek ve sorgular içinde kullanılmak üzere tasarlanırken, prosedürler daha çok işlemleri yürütmek ve transaksiyonları kontrol etmek için kullanılır. PostgreSQL'in 11 ve sonraki sürümleri, stored procedures kavramını destekler, bu da PL/pgSQL ile daha geniş bir işlevsellik sağlar.
+Elbette! PostgreSQL'de `DO` komutları, tek seferlik anonim PL/pgSQL blokları çalıştırmak için kullanılır. Bu komutlar, ad-hoc işlemler veya kısa süreli kod parçaları için uygundur ve bir fonksiyon tanımlamak zorunda kalmadan işlem yapmanızı sağlar. Aşağıda, `DO` komutlarının, `DECLARE` bölümlerinin ve PL/pgSQL'deki kullanım şekillerinin detaylı açıklaması verilmiştir.
 
+### `DO` Komutu
+
+`DO` komutu, PostgreSQL'de bir PL/pgSQL bloğunu çalıştırmanıza olanak tanır. Bu, bir prosedürü veya fonksiyonu tanımlamak zorunda kalmadan PL/pgSQL dilinde kod çalıştırmanızı sağlar.
+
+#### Temel Kullanım
+
+```sql
+DO $$
+BEGIN
+    -- PL/pgSQL kodu burada çalışır
+END $$;
+```
+
+- **`$$`**: Bu, `DO` bloğunun sınırlarını belirler. Alternatif olarak farklı bir sınır belirteci de kullanılabilir (örneğin, `$BODY$`).
+- **`BEGIN ... END`**: Bu blok, PL/pgSQL komutlarını içerir ve işlem burada gerçekleşir.
+
+### `DECLARE` Bölümü
+
+`DECLARE` bölümü, `DO` bloğu veya PL/pgSQL fonksiyonu içinde kullanılacak yerel değişkenleri tanımlamak için kullanılır. Değişkenler, sorgulardan gelen verileri depolamak veya ara hesaplamalar yapmak için kullanılır.
+
+#### Kullanım Örneği
+
+```sql
+DO $$
+DECLARE
+    my_variable INTEGER := 10;
+    another_variable TEXT := 'Hello, World!';
+BEGIN
+    RAISE NOTICE 'my_variable: %, another_variable: %', my_variable, another_variable;
+END $$;
+```
+
+- **`DECLARE`**: Bu anahtar kelime, `DO` bloğu veya bir PL/pgSQL fonksiyonu içindeki yerel değişkenlerin tanımlandığı bölümü belirtir.
+- **Değişken Tanımlamaları**: Değişkenlerin tipi ve başlangıç değeri (isteğe bağlı olarak) belirtilir.
+- **`BEGIN ... END`**: Bu blok, PL/pgSQL komutlarını içerir. Burada, değişkenler kullanılarak işlem yapılabilir.
+
+### `DO` Komutunun Kullanım Alanları
+
+`DO` komutları, çeşitli senaryolarda kullanışlıdır:
+
+1. **Ad-hoc İşlemler**:
+   - Bir kerelik veri işleme, sorgu çalıştırma veya sistem yönetimi görevleri için kullanılır.
+   - Örneğin, bir tabloyu geçici olarak güncellemek veya belirli koşullara göre veri işlemek için.
+
+2. **Dinamik SQL**:
+   - `DO` komutları, dinamik SQL oluşturmak ve yürütmek için kullanılır. Bu, `EXECUTE` komutları ile dinamik olarak SQL ifadeleri çalıştırmanıza olanak tanır.
+
+3. **Döngüler ve Koşullu Mantık**:
+   - Döngüler (`FOR`, `WHILE`) ve koşullu ifadeler (`IF`, `CASE`) kullanarak karmaşık mantık işlemleri gerçekleştirebilir.
+
+4. **Veri Göçü ve Dönüşüm**:
+   - Veri migrasyonu, dönüşümü veya başka bir yapıya veri taşıma işlemlerinde geçici olarak kullanılır.
+
+### PL/pgSQL (Procedural Language/PostgreSQL)
+
+PL/pgSQL, PostgreSQL'in prosedürel dilidir ve fonksiyonlar, tetikleyiciler ve `DO` komutları gibi yapıların yazılmasına olanak tanır. PL/pgSQL, kontrol yapıları (döngüler, koşullu ifadeler), hata ayıklama, ve değişkenler kullanarak daha karmaşık ve esnek SQL işlemleri gerçekleştirmenizi sağlar.
+
+### Örnek: Tüm Tablolar İçin Yetkileri Aktarma
+
+Aşağıdaki örnek, bir şemadaki tüm tabloların yetkilerini bir kullanıcıdan diğerine aktarmak için PL/pgSQL ile yazılmış bir `DO` bloğunu gösterir:
+
+```sql
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (
+        SELECT table_schema, table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'your_schema'
+    ) LOOP
+        EXECUTE 'GRANT ALL PRIVILEGES ON TABLE ' || quote_ident(r.table_schema) || '.' || quote_ident(r.table_name) || ' TO new_user';
+    END LOOP;
+END $$;
+```
 
 ## Kod Örnekleri - Java
 
