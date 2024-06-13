@@ -204,6 +204,9 @@ EXPLAIN SELECT * FROM foo WHERE lower(name) LIKE 'foo 25589';
 * lower(name) kolonu üzerine index oluşturalım:
 
 ```sql
+
+CREATE INDEX foo_expression_idx ON foo  (lower(name) );
+```
 EXPLAIN SELECT * FROM foo WHERE lower(name) LIKE 'foo 25589';
                                  QUERY PLAN                                 
 ----------------------------------------------------------------------------
