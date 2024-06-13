@@ -330,6 +330,8 @@ explain analyze SELECT count(*) FROM users where first_name ilike '%505%';
 
 explain analyze SELECT count(*) FROM users where first_name ilike '%aeb%' or last_name ilike'%aeb%';
 
+create extension pg_trgm;
+
 CREATE INDEX users_search_idx ON users USING gin (first_name gin_trgm_ops, last_name gin_trgm_ops);
 
 -- boyutlarına bakalım
@@ -364,7 +366,7 @@ CREATE INDEX idx_locations_gist ON locations USING GIST (location);
 
 ```
 
-### Tam Metin Arama
+### Aralık arama
 
 ```sql
 -- Aralık veri türlerini içeren bir tablo oluşturma
@@ -395,7 +397,7 @@ WHERE event_time && '[2024-06-01 12:00, 2024-06-01 13:00)';
 
 ```
 
-### Aralık Arama
+### Tam metin Arama
 
 ```sql
 -- Tam metin arama için bir tablo oluşturma
