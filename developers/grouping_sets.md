@@ -4,7 +4,7 @@ GROUPING SETS kullanarak çok sayıda GROUP BY ifadesinin UNION ALL ile birleşt
 
 Alıştırmalar için bir yabancı dil eğitim merkezinin kurs_kayit ismindeki tablosunu oluşturalım. İki dil ve iki seviye için temsili öğrenci kayıtları ekleyelim.
 
-```
+```sql
 CREATE TABLE kurs_kayit (
 ogrenci_no integer,
 ogrenci_adsoyad VARCHAR,
@@ -14,7 +14,7 @@ PRIMARY KEY (ogrenci_no)
 );
 ```
 
-```
+```sql
 INSERT INTO kurs_kayit
 VALUES
     (301, 'adsoyad1', 'İSPANYOLCA', 'Giriş'),
@@ -39,7 +39,7 @@ GROUPING SETS gruplama için kullanılan sütunlar kümesi olarak ifade edilebil
 
 Aşağıdaki sorguda dil ve seviye sütunlarından oluşan bir gruplama kümesi (grouping set) görüyoruz. Bu sorgu dil ve seviyeye göre kayıtlı öğrenci sayılarını döner.
 
-```
+```sql
 
 SELECT dil, seviye, COUNT (ogrenci_no)
 FROM
@@ -54,7 +54,7 @@ GROUP BY
 
 Aşağıdaki sorgu her dilde kayıtlı öğrenci sayısını döner. Burada gruplama kümesi (grouping set) dil sütunudur.
 
-```
+```sql
 SELECT dil, COUNT (ogrenci_no)
 FROM
     kurs_kayit
@@ -65,7 +65,7 @@ GROUP BY
 
 Aşağıdaki sorgu öğrenci sayılarını seviyeler bazında gösterir. Seviye sütunu gruplama kümesini oluşturur.
 
-```
+```sql
 SELECT seviye, COUNT (ogrenci_no)
 FROM
     kurs_kayit
@@ -76,7 +76,7 @@ GROUP BY
 
 Bu sorgu da bütün dil ve seviyeler için kayıtlı öğrenci sayısını bulur. Gruplama kümesi boş bir kümedir
 
-```
+```sql
 SELECT COUNT(ogrenci_no)
 FROM
     kurs_kayit;
@@ -320,3 +320,44 @@ ORDER BY
 
 
 http://www.postgresqltutorial.com/postgresql-rollup/
+
+
+## başka bir örnek
+
+```sql
+
+CREATE TABLE sales (
+    sale_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100),
+    sale_date DATE,
+    quantity_sold INT
+);
+
+-- rastgele oluştur
+INSERT INTO sales (product_name, sale_date, quantity_sold)
+SELECT
+    'Product ' || (i % 5 + 1),  -- Rastgele 5 farklı ürün adı oluştur
+    CURRENT_DATE - INTERVAL '1 day' * i,  -- Geçmişten bugüne kadar olan tarihler
+    (RANDOM() * 100)::INT  -- 0 ile 100 arasında rastgele satış miktarı
+FROM generate_series(1, 10365) AS s(i);  -- 365 günlük bir seri oluştur
+
+
+-- nasıl bir data oluştu
+select * from sales order by sale_id desc;
+
+
+select
+	product_name,
+   TO_CHAR(sale_date, 'YYYY') AS year,  -- Yıl
+   -- TO_CHAR(sale_date, 'Month') AS month,  -- Ay adı (tam isim)
+   EXTRACT(MONTH FROM sale_date) AS month,
+   TO_CHAR(sale_date, 'DD') AS day,  -- Gün
+   SUM(quantity_sold) AS total_quantity
+FROM
+    sales
+GROUP BY
+    cube(product_name, year,month,day)
+ORDER BY
+    product_name, year, month, day;   
+
+```
