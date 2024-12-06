@@ -278,7 +278,11 @@ Nested Loop
 
 ```
 
+
 #### Merge Join
+
+[karşılaştırma](https://gitlab.com/edib/pg-performance/-/blob/main/merge-hash-join.md)
+
 Sadece eşitlik alanlarına bakar. İndex alanlarını ya da sort ile alanları sıraya koyup paralel scan yapar ve eşitlikleri karşılaştırır. Duplicate varsa tarama işini tekrarlar.
 
 Birleştirme koşulu bir eşitlik operatörü kullanıyorsa ve birleştirmenin her iki tarafı da büyükse, ancak, birleştirme koşuluna göre verimli bir şekilde sıralanabiliyorsa (örneğin, birleştirme sütununda kullanılan ifadelerde bir index varsa) merge join tercih edilir.
