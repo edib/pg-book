@@ -109,6 +109,7 @@ ssh node1
 repo1-path=/var/lib/pgbackrest
 retention-full=2
 repo1-host= <repo-ip>
+repo1-host-user=postgres
 
 [main]
 pg1-path=/var/lib/postgresql/14/main/
