@@ -42,15 +42,15 @@ postgres=# explain select * from foo;
 (1 row)
 ```
 
-* `Seq Scan`: Diski blok blok okuyacak demektir.
-
-* `Cost`: 8K boyutundaki disk page'ini okumanın maliyeti 1 olarak kabul edilir. "sequential_page_cost" parametresiyle belirlenir.
-
-* cost to get the first row: 0.00
-* cost to get all rows: 18584.82 in “page cost” unit
-
-* `Rows`: number of rows
-* `Width`: average width of a row in bytes
+| Özellik                          | Açıklama                                                                 |
+|----------------------------------|-------------------------------------------------------------------------|
+| **Seq Scan**                     | Diski blok blok okuyacak demektir.                                      |
+| **Cost**                         | 8K boyutundaki disk page'ini okumanın maliyeti 1 olarak kabul edilir.  |
+| **Sequential Page Cost**         | `sequential_page_cost` parametresiyle belirlenir.                       |
+| **Cost to Get the First Row**    | 0.00                                                                   |
+| **Cost to Get All Rows**        | 18584.82 in “page cost” unit                                            |
+| **Rows**                         | Satır sayısı                                                      |
+| **Width**                        | byte olarak ortalama bir satırın boyutu                                         |
 
 
 
@@ -92,15 +92,10 @@ Sadece `ANALYZE` çıktısında görünür.
 
 Bu sorgunun gerçekte ne kadar süre aldığını gösterir. Bu yüzden DML sorgularını transaction içinde yapıp sonradan rollback yapmak gerekir. *actual time* ile başlayan bölüm gerçekleşme bilgileridir. 
 
-#### Buffers: shared read
-Sadece `ANALYZE` çıktısında görünür.
-
-Disten okuduğu blok sayısı
-
-#### Buffers: shared hit
-Sadece `ANALYZE` çıktısında görünür.
-
-Bellekten okuduğu blok sayısı
+| Özellik                     | Açıklama                                                                                         |
+|-----------------------------|--------------------------------------------------------------------------------------------------|
+| **Buffers: shared read**    | Veritabanının dış diskten okuduğu blok sayısını temsil eder. Bu değer, sorgunun diskten ne kadar veri okuduğunu gösterir ve genellikle yüksek bir değer, disk erişiminin maliyetli olabileceğini işaret eder. |
+| **Buffers: shared hit**     | Bellekte (cache) zaten bulunan blokların tekrar okunduğunu gösterir. Bu değer, veritabanının ne kadar etkili bir şekilde belleği kullandığını ve disk erişimini ne ölçüde azalttığını gösterir. Yüksek bir değer, belleğin etkin kullanıldığını işaret eder. |
 
 #### Loops 
 Sadece `ANALYZE` çıktısında görünür.
@@ -115,6 +110,26 @@ Sunucu, sorguyu en hızlı olduğu düşünülen planı kullanarak çalıştır�
 "planned [execution] time" ve "estimated execution time".
 
 ```
+
+* Tablo oluşturma sorguları
+
+```
+CREATE TABLE foo (
+    id SERIAL PRIMARY KEY,
+    c1 INT,
+    c2 TEXT
+);
+
+INSERT INTO foo (c1, c2)
+SELECT 
+    gs AS c1,
+    'abcd' || gs AS c2
+FROM 
+    generate_series(1, 1000) AS gs;
+
+```
+
+
 # ilk sorguda tamamı disk okumasından geliyor. 
 # Buffers: read
 
@@ -328,6 +343,8 @@ ve hemen tablodaki o kaydı ziyaret eder. Fakat Bir *Bitmap Scan* indexteki tüm
 bellek içinde 'bitmap' veri yapısını kullanarak sıralar ve ardından tablo kayıtlarını 
 fiziksel sırasına göre gezer. *Bitmap Scan*, asıl tabloya yönlendiren veriyi yerelleştirir. Maliyetleri de, veriyi *bitmap* yapısına sokarak daha fazla yer kaplamasına neden olur, veriniz artık index sırasını kaybettiği için sorgunuzdaki olası *ORDER BY* için işe yararlığını kaybeder.
 
+Verdiğiniz ifade genel olarak doğru, ancak *Index Scan* ve *Bitmap Scan* yöntemlerinin performansları belirli durumlara göre değişkenlik gösterebilir. İşte iki tarama yöntemi arasındaki farklar ve hangisinin ne zaman daha iyi olabileceğine dair bir açıklama:
+
 #### Recheck Cond
 Yalnızca bitmap loosy olduğunda yeniden kontrol gerçekleştirilir.
 *work_mem*, tablo satırı başına bir bit içeren bir bitmap içerecek kadar büyük değilse, bitmap index taraması kaybolur(loosy) ve bitmap adreslemesi *page* başına bir bit'e düşecektir. Bu tür bloklardan gelen satırların yeniden kontrol edilmesi gerekecektir.
@@ -363,9 +380,55 @@ EXPLAIN SELECT * FROM tenk1 WHERE unique1 < 100 AND unique2 > 9000;
 
 #### Sorgu Planlayıcısına Farklı Plan Yaptırmak
 
+### 1. `tenk1` Tablosunu Oluşturma
+
+```sql
+CREATE TABLE tenk1 (
+    unique1 INT,
+    unique2 INT,
+    PRIMARY KEY (unique2)
+);
+```
+
+### 2. `onek` Tablosunu Oluşturma
+
+```sql
+CREATE TABLE onek (
+    unique2 INT,
+    some_data TEXT,
+    PRIMARY KEY (unique2)
+);
+```
+
+### 3. Örnek Veri Eklemek için SQL Komutları
+
+#### `tenk1` Tablosuna Veri Ekleme
+
+```sql
+INSERT INTO tenk1 (unique1, unique2)
+SELECT 
+    gs AS unique1, 
+    gs % 100 AS unique2  -- 0-99 arası unique2 değerleri
+FROM 
+    generate_series(1, 1000) AS gs;
+```
+
+#### `onek` Tablosuna Veri Ekleme
+
+```sql
+INSERT INTO onek (unique2, some_data)
+SELECT 
+    gs AS unique2,
+    'Data ' || gs AS some_data  -- her unique2 için bir veri
+FROM 
+    generate_series(1, 1000) AS gs;
+```
+
+
 Normal sorgu:
 
 ```sql
+
 EXPLAIN SELECT *
 FROM tenk1 t1, onek t2
 WHERE t1.unique1 < 100 AND t1.unique2 = t2.unique2;
@@ -402,11 +465,17 @@ WHERE t1.unique1 < 100 AND t1.unique2 = t2.unique2;
 
 ### Merge Join
 
-#### Özellikleri:
-- **Önceden Sıralama Gerektirir**: Merge Join, birleştirilecek her iki tablonun da birleştirilecek sütuna göre sıralı olmasını gerektirir. Eğer tablolar sıralı değilse, önce sıralama işlemi yapılır.
-- **Büyük Veri Setleri İçin Uygun**: Özellikle büyük veri setleri üzerinde etkili olabilir çünkü sıralama işlemi bir kez yapıldıktan sonra birleştirme işlemi oldukça hızlıdır.
-- **Eşitlik ve Karşılaştırma**: Genellikle eşitlik (`=`) ve karşılaştırma (`<`, `<=`, `>`, `>=`) operatörlerini kullanarak birleşim yapar.
-- **Veri Seti Boyutu**: İki büyük veri seti arasında birleşim yaparken iyidir, çünkü sıralama bir kez yapıldığında birleşim işlemi lineer zaman alır.
+| Özellik                          | Açıklama                                                                                     |
+|----------------------------------|----------------------------------------------------------------------------------------------|
+| **Önceden Sıralama Gerektirir** | Merge Join, birleştirilecek her iki tablonun da birleştirilecek sütuna göre sıralı olmasını gerektirir. Eğer tablolar sıralı değilse, önce sıralama işlemi yapılır. Bu, ek maliyet getirebilir, ancak sıralama sonrası birleşim performansı artar. |
+| **Büyük Veri Setleri İçin Uygun** | Özellikle büyük veri setleri üzerinde etkili olabilir çünkü sıralama işlemi bir kez yapıldıktan sonra birleştirme işlemi oldukça hızlıdır. Bu, bellek ve işlemci kullanımı açısından avantaj sağlar. |
+| **Eşitlik ve Karşılaştırma**    | Genellikle eşitlik (`=`) ve karşılaştırma (`<`, `<=`, `>`, `>=`) operatörlerini kullanarak birleşim yapar. Bu tür operatörler, Merge Join'ın verimliliğini artırır çünkü sıralı verilerde arama daha hızlıdır. |
+| **Veri Seti Boyutu**            | İki büyük veri seti arasında birleşim yaparken iyidir, çünkü sıralama bir kez yapıldığında birleşim işlemi lineer zaman alır. Bu, özellikle büyük veri analitiği ve raporlama için önemlidir. |
+
+### Ekstra Bilgi
+
+- **Sıralama Maliyeti**: Sıralama işlemi ek maliyet getirecektir, bu yüzden küçük veri setlerinde Merge Join yerine diğer join türleri (örneğin, Hash Join veya Nested Loop) daha uygun olabilir.
+- **Kullanım Senaryoları**: Merge Join, genellikle verilerin sıralı olduğu durumlarda veya sıralı indekslerin mevcut olduğu durumlarda tercih edilir. Özellikle veritabanı optimizasyonu için kullanışlıdır.
 
 #### İşleyişi:
 1. İki tablo sıralanır (eğer zaten sıralı değilse).
