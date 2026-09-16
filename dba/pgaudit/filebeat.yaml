@@ -1,0 +1,31 @@
+filebeat.inputs:
+  - type: filestream
+    id: pgaudit-csv
+    enabled: true
+    paths:
+      - /var/lib/postgresql/18/main/log/*.csv   # kendi csv log yolunla degistir
+
+    # pgaudit satirlarindaki SQL sorgulari icinde newline gecebiliyor;
+    # bu ayar, timestamp ile baslamayan satirlari bir onceki kaydin
+    # devami sayarak CSV kaydinin bolunmesini engeller.
+    parsers:
+      - multiline:
+          type: pattern
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
+          negate: true
+          match: after
+
+    # Ayristirmayi Elasticsearch ingest pipeline'i yapiyor.
+    pipeline: pgaudit-csv
+
+
+output.elasticsearch:
+  hosts: ["http://localhost:9200"]
+  username: "elastic"
+  password: "Lox8ODrB"
+  index: "postgres-%{+yyyy.MM.dd}"
+
+
+setup.template.name: "postgres"
+setup.template.pattern: "postgres-*"
+setup.ilm.enabled: false

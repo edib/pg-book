@@ -1,0 +1,64 @@
+# elastic dev-toolsta çalışacak. adı filebeatte kullanılacak.
+
+PUT _ingest/pipeline/pgaudit-csv
+{
+  "processors": [
+    {
+      "csv": {
+        "field": "message",
+        "target_fields": [
+          "pg.log_time","pg.user_name","pg.database_name","pg.process_id",
+          "pg.connection_from","pg.session_id","pg.session_line_num","pg.command_tag",
+          "pg.session_start_time","pg.virtual_transaction_id","pg.transaction_id",
+          "pg.error_severity","pg.sql_state_code","pg.message","pg.detail","pg.hint",
+          "pg.internal_query","pg.internal_query_pos","pg.context","pg.query",
+          "pg.query_pos","pg.location","pg.application_name","pg.backend_type"
+        ],
+        "ignore_missing": false
+      }
+    },
+    {
+      "gsub": {
+        "field": "pg.message",
+        "pattern": "^AUDIT:\\s*",
+        "replacement": "",
+        "ignore_missing": true
+      }
+    },
+    {
+      "csv": {
+        "field": "pg.message",
+        "target_fields": [
+          "pgaudit.audit_type","pgaudit.statement_id","pgaudit.substatement_id",
+          "pgaudit.class","pgaudit.command","pgaudit.object_type",
+          "pgaudit.object_name","pgaudit.statement","pgaudit.parameter"
+        ],
+        "ignore_failure": true
+      }
+    },
+    {
+      "date": {
+        "field": "pg.log_time",
+        "target_field": "@timestamp",
+        "formats": ["yyyy-MM-dd HH:mm:ss.SSS XX", "yyyy-MM-dd HH:mm:ss.SSS"],
+        "ignore_failure": true
+      }
+    },
+    {
+      "remove": {
+        "field": ["message", "pg.message"],
+        "ignore_missing": true
+      }
+    }
+  ]
+}
+
+# bununla dev toolstan test edebiliriz.
+
+
+POST _ingest/pipeline/pgaudit-csv/_simulate
+{
+  "docs": [
+    { "_source": { "message": "<gerçek csv satırını buraya yapıştır>" } }
+  ]
+}
