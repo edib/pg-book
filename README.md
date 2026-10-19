@@ -44,6 +44,7 @@
 ## İzleme ve Performans
 * [İzleme](dba/izleme.md)
 * [Loglar](dba/logs.md)
+* [Healthcheck](dba/healthcheck.md)
 * [Explain](https://tubitak-bilgem-yte.github.io/pg-yonetici/docs/08-performans/explain/)
 
 --------- 
