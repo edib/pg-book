@@ -136,6 +136,39 @@ WHERE p.prosecdef AND (p.proconfig IS NULL OR NOT EXISTS
 SELECT nspname, nspacl FROM pg_namespace WHERE nspacl::text LIKE '%=U%' OR nspacl::text LIKE '%=UC%';
 ```
 
+Yeni user oluşturma kuralları
+
+```
+-- ===== Superuser olarak, herhangi bir DB'den =====
+REVOKE ALL ON DATABASE appdb     FROM PUBLIC;
+REVOKE ALL ON DATABASE postgres  FROM PUBLIC;
+REVOKE ALL ON DATABASE template1 FROM PUBLIC;
+
+CREATE ROLE appuser LOGIN PASSWORD '...'
+  NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+
+GRANT CONNECT ON DATABASE appdb TO appuser;
+
+-- ===== appdb'ye bağlanarak (\c appdb) =====
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE EXECUTE ON ALL FUNCTIONS IN SCHEMA public FROM PUBLIC;
+
+-- Tablo/fonksiyonları oluşturan rol (örn. owner) için varsayılanlar
+ALTER DEFAULT PRIVILEGES FOR ROLE app_owner
+  REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
+
+-- Kullanıcıya gereken yetkiler
+GRANT USAGE ON SCHEMA public TO appuser;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO appuser;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO appuser;
+
+-- Gelecekte app_owner'ın oluşturacağı nesneler için
+ALTER DEFAULT PRIVILEGES FOR ROLE app_owner IN SCHEMA public
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO appuser;
+ALTER DEFAULT PRIVILEGES FOR ROLE app_owner IN SCHEMA public
+  GRANT USAGE, SELECT ON SEQUENCES TO appuser;
+```
+
 ---
 
 ## 5. Şifreleme
